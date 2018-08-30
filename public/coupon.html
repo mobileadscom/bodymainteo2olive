@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+  <title>FamilyMart サラダスムージー</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+</head>
+<body>    
+  <header>
+  	<div class="banner">
+      <img src="img/header-new.png" />
+  	</div>
+  </header>
+  <div>
+    <div id="couponPage" style="display: none;">
+      <div style="padding: 0px 15px;">
+      	<div id="couponNumber">
+    	  	123456
+      	</div>
+    	  <div id="couponInfo">
+          <span style="color: #19AE48;font-weight: 600;">クーポン発券期限：</span>
+          <br>2018年9月9日まで
+          <br><br><span style="color: #19AE48;font-weight: 600;">商品引換期限：</span>
+          <br>2018年9月10日まで
+          <br><br><span style="color: #19AE48;font-weight: 600;">交換場所：</span>
+          <br>全国のファミリーマート店舗
+          <br><br><span style="color: #19AE48;font-weight: 600;">Famiポート操作手順：</span>
+          <br>※店頭に商品がない場合がございます。ご来店される店舗に商品があることをご確認の上、クーポン券を発券してください。
+          <br><br>以下の手順でファミリーマート店頭のFamiポートで、クーポン券を発券してください。
+          <div class="bullets-wrapper" style="margin: 10px auto;">
+            <ol>
+              <li>Famiポート トップメニュー（トップ画面）で「クーポン券」をタッチ</li>
+              <li>「シリアル番号をお持ちの方はこちら」ボタンをタッチ</li>
+              <li>クーポン発券用シリアル番号を入力</li>
+              <li>サービス内容を確認</li>
+              <li>クーポン券を発券</li>
+            </ol>
+          </div>
+          発券したクーポン券とともに対象商品をレジカウンターにお持ちください。
+          <br><br><span style="font-weight: 600;"> 【ご注意事項】 </span>
+          <div class="bullets-wrapper" style="margin: 10px auto;">
+            <ul>
+              <li>全国のファミリーマートでご利用頂けます。サークルＫ・サンクスでは利用できません。</li>
+              <li>ファミリーマート店内のFamiポートでシリアル番号を入力し、クーポン券を発券してください。</li>
+              <li>一部対象商品の取扱いのない店舗もございます。ご来店の際に必ず店舗に商品があるかご確認の上、クーポン券を発券してください。</li>
+              <li>クーポン券1枚で対象商品1点にご利用頂けます。</li>
+              <li>1回のお会計で1枚のみご利用頂けます。</li>
+              <li>他のクーポン券、割引・優待サービスとの併用はできません。</li>
+              <li>現金への換金、汚損・破損・紛失によるクーポン券のお取替え、再発行はできません。</li>
+              <li>有効期限切れや、クーポン券のコピーは無効となります。</li>
+              <li>クーポン券の発行権利はご本人様以外に転売・譲渡できません。</li>
+              <li>ご利用の商品は、お客様の都合による返品はできません。</li>
+              <li>Famiポートクーポンの使い方
+                <br><a href="https://www.famiportcoupon.jp/howto.html" target="_blank" style="font-size: 13px;">https://www.famiportcoupon.jp/howto.html</a>
+              </li>
+            </ul>
+          </div>
+          <br>発券されるクーポン券面の注意事項もお読みくださいますようお願い申し上げます。
+        </div>
+    	</div>
+      <div style="margin-bottom: 20px;">
+        商品の感想を下記にコメントください。
+        <br><a href="https://twitter.com/ienomistyle" target="_blank">https://twitter.com/ienomistyle</a>
+      </div>
+    </div>
+    <div id="surveyPage" style="display: none;">
+      <span style="color: #0193DD; font-size: 16px;">アンケートに答えて商品をGet!
+      <br>抽選で17,000名様に商品をプレゼント</span>
+      <br><br><a href="https://couponcampaign.ienomistyle.com/%E3%82%B5%E3%83%A9%E3%83%80%E3%82%B9%E3%83%A0%E3%83%BC%E3%82%B8%E3%83%BCLIVE/" style="font-size: 14px;">https://couponcampaign.ienomistyle.com/サラダスムージーLIVE/</a>
+    </div>
+    <div id="loserPage" style="display: none;">
+      <div id="resultTitle" style="color: red;">残念！</div>
+      <div id="resultDescription">はずれ</div>
+      <div id="resultInstruction" style="font-weight: 500;">ご参加頂きありがとうございました。</div>
+    </div>
+  </div>
+</body>
+</html>
+
+<script type="text/javascript">
+function getParams() {
+  var query_string = {};
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+      var pair = vars[i].split("=");
+      // If first entry with this name
+      if (typeof query_string[pair[0]] === "undefined") {
+          query_string[pair[0]] = pair[1];
+      // If second entry with this name
+      } else if (typeof query_string[pair[0]] === "string") {
+          var arr = [ query_string[pair[0]], pair[1] ];
+          query_string[pair[0]] = arr;
+      // If third or later entry with this name
+      } else {
+          query_string[pair[0]].push(pair[1]);
+      }
+  } 
+  return query_string;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var params = getParams();
+  window.params = params;
+  if (params.userId) {
+    if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+     } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        var response = this.responseText ? JSON.parse(this.responseText) : {};
+        // var response = JSON.parse(this.responseText);
+        console.log(response);
+        if (response.couponCode) {
+          document.getElementById('couponNumber').innerHTML = response.couponCode;
+          document.getElementById('couponPage').style.display = 'block';
+
+
+          var timestamp = Date.now();
+          var pixel = document.createElement('img');
+          pixel.src = 'https://track.richmediaads.com/a/analytic.htm?uid=0&isNew={{isNew}}&referredUrl={{referredUrl}}&rmaId=2&domainId=0&pageLoadId=' + timestamp + '&userId=4831&pubUserId=0&campaignId=e32e385370b2e04d225d2dfa5497483b&browser={{browser}}&os={{os}}&domain={{domain}}&callback=trackSuccess&type=coupon_view&tt=E&value=' + response.couponCode + '&ty=E&uniqueId=' + params.userId;
+            document.body.appendChild(pixel);
+        }
+        else {
+          if (response.state == "lose") {
+            document.getElementById('loserPage').style.display = 'block';
+          }
+          else {
+            document.getElementById('surveyPage').style.display = 'block';
+          }
+        }
+      }
+      else if (this.readyState == 4 && this.status != 200) {
+        document.getElementById('surveyPage').style.display = 'block';
+      }
+    };
+    var userQuery = JSON.stringify({
+      id: params.userId
+    });
+    xmlhttp.open("GET", 'https://api.mobileads.com/mgd/qOne?col=FamilyMartUsers&qobj=' + encodeURIComponent(userQuery), true);
+    xmlhttp.send();
+  }
+  else {
+    console.log('no params found');
+    document.getElementById('surveyPage').style.display = 'block';
+  }
+});
+</script>
+
+<style type="text/css">
+@media( min-width: 1px) {
+  .banner {
+    height: 65px;
+  }
+
+  #resultTitle {
+    font-size: 24px;
+    margin-top: 20px;
+  }
+
+  #resultDescription, #resultInstruction {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  #resultTitle {
+    font-size: 30px;
+    margin-top: 30px;
+  }
+
+  #resultDescription {
+    font-size: 20px;
+  }
+}
+
+@media( min-width: 996px) {
+  .banner {
+    height: 90px;
+  }
+}
+
+.banner {
+  width: 100%;
+  text-align: left;
+  background-image: url('img/header-bg-new.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+}
+
+.banner img {
+  height: 100%;
+  display: block;
+  margin: auto;
+}
+
+body {
+	margin: 0px;
+  text-align: center;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: Arial;
+}
+
+#couponNumber {
+	margin: 30px auto 20px;
+	color: #0193DD;
+	padding: 5px;
+	border-radius: 4px;
+	border: 1px solid #0193DD;
+	font-size: 28px;
+	max-width: 360px;
+}
+
+#couponInfo {
+  margin: 30px auto 20px;
+  font-size: 14px;
+  padding: 10px;
+  border: 1px solid #19AE48;
+  border-radius: 4px;
+  max-width: 600px;
+  text-align: left;
+  /*font-weight: 600;*/
+}
+
+.bullets-wrapper {
+  margin: auto;
+  max-width: 500px;
+}
+
+.bullets-wrapper ol, .bullets-wrapper ul {
+  text-align: left;
+  margin-top: 0px;
+  padding-left: 20px;
+}
+
+#surveyPage, #loserPage {
+  font-weight: 600;
+  margin-top: 15px;
+  padding: 0px 20px;
+  text-align: center;
+}
+#resultTitle {
+    font-weight: 600;
+    padding: 0px 15px;
+}
+#resultDescription, #resultInstruction {
+    margin-top: 10px;
+    padding: 0px 15px;
+</style>

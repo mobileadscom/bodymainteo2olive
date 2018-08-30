@@ -1,0 +1,5 @@
+/node_modules
+/public/dist
+/public/javascripts/firebaseConfig.js
+/functions/node_modules
+/functions/twitter-config.js

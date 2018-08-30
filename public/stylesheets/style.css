@@ -1,0 +1,530 @@
+html {
+  height: 100%;
+}
+
+body {
+	margin: 0px;
+  text-align: center;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: Arial;
+}
+
+div {
+  box-sizing: border-box;
+}
+
+@media( min-width: 1px) {
+  .banner {
+    height: 65px;
+  }
+
+  .terms {
+    height: 250px;
+    font-size: 14px;
+  }
+
+  .terms.sm {
+    height: 200px;
+  }
+  
+  .terms .instruction {
+    font-size: 16px;
+  }
+
+  .terms .paragraph {
+    text-indent: 30px;
+    margin: 10px auto;
+  }
+
+  .terms .points-title:before {
+    height: 15px;
+    width: 15px;
+  }
+
+  .info {
+    font-size: 12px;
+  }
+
+  .info .points-title:before {
+    height: 12px;
+    width: 12px;
+  }
+  
+  #page-wrapper {
+    height: calc(100% - 65px);
+  }
+
+  #resultImage, .intro-image {
+    width: 90%;
+    max-width: 250px;
+  }
+
+  #resultTitle {
+    font-size: 24px;
+    margin-top: 20px;
+  }
+
+  #resultDescription {
+    font-weight: 600;
+  }
+
+  #resultDescription, #resultInstruction {
+    font-size: 16px;
+  }
+
+  .vid-wrapper {
+    width: 300px;
+    height: 250px;
+  }
+}
+
+@media( min-width: 480px) {
+  .vid-wrapper {
+    width: 450px;
+    height: 300px;
+  }
+}
+
+@media( min-width: 768px) {
+  .terms {
+    height: 400px;
+    font-size: 16px;
+  }
+
+  .terms.sm {
+    height: 250px;
+  }
+
+  .terms .instruction {
+    font-size: 20px;
+  }
+
+  .terms .paragraph {
+    text-indent: 50px;
+    margin: 20px auto;
+  }
+
+  .terms .points-title:before {
+    height: 18px;
+    width: 18px;
+  }
+
+  .info {
+    font-size: 14px;
+  }
+
+  .info .points-title:before {
+    height: 16px;
+    width: 16px;
+  }
+
+  #resultImage, .intro-image {
+    width: 90%;
+    max-width: 300px;
+  }
+
+  #resultTitle {
+    font-size: 30px;
+    margin-top: 30px;
+  }
+
+  #resultDescription {
+    font-size: 20px;
+  }
+}
+
+@media( min-width: 996px) {
+  .banner {
+    height: 90px;
+  }
+
+  #page-wrapper {
+    height: calc(100% - 90px);
+  }
+}
+
+.shadow-1 {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.shadow-2 {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.shadow-3 {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.shadow-4 {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.shadow-5 {
+  box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+.red {
+  color: #E54C3C;
+}
+
+.banner {
+  width: 100%;
+  background-color: #4F5640;
+  text-align: left;
+/*  background-image: url('../images/header-bg-new.png');*/
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+}
+
+.banner img {
+  height: 100%;
+  display: block;
+  margin: auto;
+}
+
+#page-wrapper {
+  position: relative;
+}
+
+.page {
+  text-align: center;
+}
+
+.loading-block {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  color: #E54C3C;
+  font-weight: 600;
+}
+
+.msg-wrapper {
+  font-weight: 600;
+  margin-top: 15px;
+  padding: 0px 20px;
+}
+
+.tnc-wrapper {
+  width: 90%;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.terms {
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid #AAA;
+  padding: 12px;
+  text-align: center;
+  position: relative;
+  margin: 15px auto 0px;
+}
+
+.terms ul {
+  padding-left: 20px;
+}
+
+.terms::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+.terms::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+ 
+/* Handle */
+.terms::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 2px;
+}
+
+/* Handle on hover */
+.terms::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+.terms .instruction {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 600;
+}
+
+.terms .paragraph {
+  max-width: 600px;
+}
+
+.terms .list {
+  max-width: 700px;
+  margin: auto;
+  text-align: left;
+}
+
+.terms .list ol{
+  padding-left: 20px;
+}
+
+.terms .list ol li {
+  margin: 5px 0px;
+}
+
+.terms .j-list-wrapper {
+  text-align: left;
+}
+
+.terms .j-list {
+  margin: 5px 0px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+.terms .j-list .j-point {
+   display: inline-block;
+   margin: 0px 5px;
+}
+
+.terms .j-list .j-text {
+  display: inline-block;
+}
+/*.terms .points {
+  position: absolute;
+  top: 100%;
+}*/
+
+.points-title:before {
+  content: "";
+  background-color: black;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.agree-box {
+  width: 120px;
+  margin-top: 20px;
+}
+
+.pageQuestion {
+  width: 90%;
+  max-width: 600px;
+  margin: auto;
+  font-size: 16px;
+}
+
+.page .pagination-wrapper {
+  margin-bottom: 15px;
+}
+
+.page .pagination-wrapper button, #toTerms, #startSurvey, #couponLink button {
+  border-radius: 3px;
+  font-size: 1.25em;
+  border: 1px solid transparent;
+  background-color: #C4F86E;
+  color: black;
+  width: 100px;
+  height: 34px;
+  padding: 1px 8px;
+  transition: all 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  font-weight: 600;
+}
+
+#startSurvey {
+  margin-top: 20px;
+}
+
+#couponLink button {
+  width: 250px;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.page .question-no {
+  display: inline-block;
+  margin: 0px 10px;
+  color: #E54C3C;
+  font-weight: 600;
+}
+
+button.back-btn {
+  text-align: right;
+  position: relative;
+}
+
+button .left {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  left: -2px;
+  top: 4px;
+  pointer-events: none;
+}
+
+button .left:after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 23px;
+  border-right: 14px solid white;
+  border-bottom: 10px solid transparent;
+  border-top: 10px solid transparent;
+  box-sizing: border-box;
+  border-radius: 4px;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+button:hover .left:after {
+  border-right: 14px solid #ccc;
+}
+
+button.next-btn, #startSurvey, #toTerms {
+  text-align: left;
+  position: relative;
+}
+
+button .right {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  right: 12px;
+  top: 4px;
+  pointer-events: none;
+}
+
+button .right:after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 23px;
+  border-left: 14px solid white;
+  border-bottom: 10px solid transparent;
+  border-top: 10px solid transparent;
+  box-sizing: border-box;
+  border-radius: 4px;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+button:hover .right:after {
+  border-left: 14px solid black;
+}
+
+.page .pagination-wrapper button:hover, #toTerms:hover, #startSurvey:hover, #couponLink button:hover {
+  /*color: white;
+  background-color: #E54C3C;*/
+/*  color: white;*/
+  cursor: pointer;
+}
+
+.page .pagination-wrapper button[disabled], #startSurvey[disabled] {
+  opacity: 0.3;
+}
+
+#resultImage, .intro-image {
+  display: block;
+  margin: 10px auto 0px;
+}
+
+#resultTitle {
+  font-weight: 600;
+  padding: 0px 15px;
+}
+
+#resultDescription, #resultInstruction {
+  margin-top: 10px;
+  padding: 0px 15px;
+}
+
+#couponLink {
+  display: block;
+  text-decoration: none;
+  margin-top: 20px;
+}
+
+#couponInfo {
+  margin: 30px auto 20px;
+  font-size: 14px;
+  padding: 10px;
+  border: 1px solid #19AE48;
+  border-radius: 4px;
+  max-width: 600px;
+  /*text-align: left;*/
+  text-align: center;
+  font-weight: 600;
+}
+
+.bullets-wrapper {
+  margin: auto;
+  max-width: 500px;
+}
+
+.bullets-wrapper ol, .bullets-wrapper ul {
+  text-align: left;
+  margin-top: 0px;
+  padding-left: 20px;
+}
+
+.loader {
+  border: 2px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 2px solid #536D79;
+  width: 20px;
+  height: 20px;
+  -webkit-animation: spin 1s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader.in-btn {
+  display: inline-block;
+  vertical-align: text-bottom;
+}
+
+#toTerms {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.info {
+  text-align: left;
+  margin: auto;
+  margin-top: 20px;
+}
+
+#toVideo {
+  margin: 20px;
+  margin-bottom: 40px;
+  background-color: #00bd4f;
+  border: none;
+  color: white;
+  padding: 6px 15px;
+  font-size: 18px;
+  border-radius: 8px;
+}
+
+#toVideo:hover {
+  cursor: pointer;
+  background-color: #00984f;
+}
+
+.vid-wrapper {
+  margin: 15px auto;
+}

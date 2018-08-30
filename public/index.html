@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+  <title>FamilyMart サラダスムージー</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+</head>
+<body>    
+  <header>
+  	<div class="banner">
+      <img src="images/header-new.png" />
+  	</div>
+  </header>
+
+  <div id="regModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modalCloser" data-target="regModal">&times;</span>
+        <h2>登録</h2>
+      </div>
+      <div class="modal-body">
+      	<div id="formSecWrapper">
+	        <div id="regSec" class="sec">
+	          <form id="regForm">
+	            <div>Email:</div>
+	            <input type="email" id="emailInput" required />
+	            <div></div>
+	            <input type="submit" id="submitBtn" class="shadow-1" value="OK" />
+	          </form>
+	          <div class="form-loader" id="formWorking">
+	          </div>
+	        </div>
+	        <div id="doneSec" class="sec">
+	          正式登録のためのリンクを登録頂いたEmailアドレスに送付しました。
+	          <br>
+	          内容をご確認頂き、リンクをクリックしていただければ登録は終了となります。
+	          <br>
+	          その後アンケートにお進みください。
+	        </div>
+	      </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="page-wrapper">
+  	<div id="loadingPage" class="page">
+	    <div class="loading-block">
+	      <br>LOADING
+	    </div>
+	  </div>
+	  <div id="termsPage1" class="page">
+	  	<div class="msg-wrapper" id="terms1Msg" style="margin-bottom: 10px;">
+		  	<span style="color: #0193DD; font-size: 16px;">アンケートに答えて商品をGet!
+				<br>抽選で100,000名様に商品をプレゼント</span>
+				<div class="campaignInfo">
+					<span style="color: #19AE48;">キャンペーン期間：</span><br>2018年10月9日〜10月22日まで
+					<br><br><span style="color: #19AE48;">クーポン発券期間：</span><br>2018年10月9日〜10月22日まで
+					<br><br><span style="color: #19AE48;">商品引換期間：</span><br>2018年10月9日〜10月23日まで
+					<br><br><span style="color: #19AE48;">交換店舗：</span><br>全国のファミリーマート店舗
+		    </div>
+		    <div class="regInstruction">
+			    キャンペーンへの参加はお一人様一回限りとなります。
+		      <br>下記どちらかに登録してお進みください。
+		    </div>
+		    <div style="">
+		    	利用規約に同意してお進みください。
+		    	<br>
+			    <button id="toTerms2" class="pageBtn" data-target="termsPage2">利用規約</button>
+			  </div>
+		  </div>
+	  </div>
+	  <div id="termsPage2" class="page">
+	    <div class="msg-wrapper">
+		    利用規約に同意ください。
+	    </div>
+	    <div class="tnc-wrapper">	
+	    <div class="terms" id="tnc">
+	    	<strong>アンケート参加同意書</strong>
+	    	<div class="paragraph">本アンケートは、株式会社コンテンツブレイン(以下「コンテンツブレイン」といいます)が実施するキャンペーン用アンケートです。本アンケートに関して、コンテンツブレインが取得する情報は、アンケートに関する個人情報等取扱い規約(以下「本規約」といいます)に従って取扱われます。</div> 
+			<div class="list">
+				<ol>
+					<li>本規約には、コンテンツブレイン実施のアンケートの回答情報を集計した情報、および意見等自由記載が行える場合にはその文章を、アンケート依頼元に対して提供することに関する同意が含まれています。なお、依頼元に提供する情報の中に連絡先情報(メールアドレスもしくはTwitter ID)は含まれません。</li>
+					<li>本アンケートでは、お客様を識別するために「メールアドレス」もしくは「TwitterID」 を利用しますが、アンケート期間終了後には自動的に消去されます。</li>
+					<li>本アンケートにおいて、お客様を識別する情報を保管する期間は 2018年08月28日　から　2018年09月11日　です。</li>
+					<li>本規約には、アンケート期間中のオプトアウト方法のご案内も含まれています。同意される場合のみ、本アンケートにご回答ください。</li>
+					<li>本アンケートは市場調査を目的としており、回答情報によるご案内の送付等は行いません。</li>
+					<li> アンケートの回答はおひとり様1回のみです。おひとりで複数回々答した場合、その他、不正な行為が行われた場合、進呈クーポンは無効となる場合があります。</li>
+					<li>本アンケートの情報収集について、コンテンツブレインは株式会社Mobile360に委託し収集するものとします。</li>
+				</ol>
+			</div>
+	    	<div class="paragraph">アンケートに関する個人情報等取扱い規約</div>
+	    	<div class="list">
+	    		<ol>
+	    			<li>コンテンツブレインは、次項に定めるお客さまの情報(以下「アンケート情報等」といいます)を以下の目的で利用等します。</li>
+	    			<li>商品・サービス等に関する調査の実施・分析等</li>
+	    			<li>商品・サービス等の案内</li>
+	    			<li>アンケート対象者の選定</li>
+	    			<li>クーポンの付与</li>
+	    			<li>アンケート情報等とは、以下の情報をいいます。
+						<div class="j-list-wrapper">
+							<div class="j-list">
+								<div class="j-point">(ア)</div><div class="j-text">お客さまによるコンテンツブレイン実施のアンケートへの回答内容</div>
+							</div>
+							<div class="j-list">
+								<div class="j-point">(ア)</div><div class="j-text">コンテンツブレインがお客さまを識別するための「メールアドレス」もしくは、<br>「Twitter ID」 </div>
+							</div>
+						</div>
+	    			</li>
+	    		</ol>
+	    	</div>
+		  </div>
+		    <div class="agree-box miniCheckbox">
+		      <input type="checkbox" id="agreeCheck">
+		      <label for="agreeCheck">同意する</label>
+		      <span class="checkmark"></span>
+		    </div>
+		</div>
+	    <button id="startSurvey" class="pageBtn next-btn" data-target="regPage" disabled>同意する </button>
+	  </div>
+	  <div id="regPage" class="page">
+	  	<div class="msg-wrapper" id="regMsg" style="margin-bottom: 15px;">
+	  		&#19979;&#35352;&#12393;&#12385;&#12425;&#12363;&#12434;&#30331;&#37682;&#12375;&#12390;
+	  		<br>&#12450;&#12531;&#12465;&#12540;&#12488;&#12395;&#12362;&#36914;&#12415;&#12367;&#12384;&#12373;&#12356;&#12290;
+	  		<!-- 下記どちらかを登録して
+				<br>アンケートにお進みください。 -->
+	  	</div>
+	    <div id="regButtons">
+	      <button class="registerBtn modalOpener shadow-1" id="regEmail" data-target="regModal">Email</button>
+	      <div></div>
+	      <button class="registerBtn shadow-1" id="regTwitter">Twitter</button>
+	    </div>
+	    <div class="form-loader" id="regWorking"></div>
+	  </div>
+	  <div id="followPage" class="page">
+	    <div class="msg-wrapper">
+	      キャンペーンに参加するために当社Twitter をフォローしてください。
+	      <br><span style="color:#0c7abf;">@ienomistyle イエノミスタイル</span>
+	    </div>
+	    <br>
+	    <img src="images/follow.png" style="width: 150px;" id="followBtn"/>
+	    <div id="successFollow">
+	      成功！
+	    </div>
+	  </div>
+	  <!-- <div id="introPage" class="page">
+			<img class="intro-image" src="images/calbee.png" />
+			<div class="tnc-wrapper">	
+		    <div class="info">
+					<strong class="points-title">応募期間</strong>
+					<br>2018年 月 日から2018年 月 日まで
+					<br><br>
+					<strong class="points-title">概要</strong>
+					<br>アンケートを完了した方から抽選で500名さまに「カルビー じゃがりこ サラダ」が当たります。
+					<br><br>
+					<strong class="points-title">商品引き換え期間</strong>
+					<br>2018年6月23日(日）まで
+					<br><br>
+					<strong class="points-title">賞品</strong>
+					<br>カルビー じゃがりこ サラダ　1個
+					<br><br>
+					<strong class="points-title">受け取り場所</strong>
+					<br>セブン-イレブンでお受取りいただけます。
+					<br><a href="http://www.sej.co.jp/shop/index.html" target="_blank">詳細はコチラ</a>
+					<br><br>
+					<strong class="points-title">当選発表</strong>
+					<br>アンケート回答後、その場で当選が分かります。 また、当選した方にはTesTee・Powlのマイページにもお知らせします。
+					<br><br>
+					<strong class="points-title">引き換え方法</strong>
+					<br>当選画面・または上述のマイページにクーポンURLを記載しますので、 対象店舗にてお引き換えください。
+			  </div>
+			</div>
+		  <button id="toTerms" class="pageBtn next-btn" data-target="termsPage">NEXT <span class="right"></button>
+	  </div>  -->
+	  <div id="page1" class="page">
+	  	<div id="q1" class="pageQuestion">
+	  	</div>
+	  	<div class="pagination-wrapper">
+	      <div class="question-no">
+	        1/5
+	    	</div>
+	      <button id="toQ2" class="pageBtn next-btn saveQuestion" data-question="1" data-target="page2">NEXT <span class="right"></span></button>
+	  	</div>
+	  </div>
+	  <div id="page2" class="page">
+	  	<div id="q2" class="pageQuestion">
+	  	</div>
+	  	<div class="pagination-wrapper">
+	  		<button id="toQ1" class="pageBtn back-btn" data-target="page1">BACK <span class="left"></span></button>
+	      <div class="question-no">
+	        2/5
+	    	</div>
+	      <button id="toQ3" class="pageBtn next-btn saveQuestion" data-question="2" data-target="page3">NEXT <span class="right"></span></button>
+	  	</div>
+	  </div>
+	  <div id="page3" class="page">
+	  	<div id="q3" class="pageQuestion">
+	  	</div>
+	  	<div class="pagination-wrapper">
+	  		<button id="toQ2" class="pageBtn back-btn" data-target="page2">BACK <span class="left"></span></button>
+	      <div class="question-no">
+	        3/5
+	    	</div>
+	      <button id="toQ4" class="pageBtn next-btn saveQuestion" data-question="3" data-target="page4">NEXT <span class="right"></button>
+	  	</div>
+	  </div>
+	  <div id="page4" class="page">
+	  	<div id="q4" class="pageQuestion">
+	  	</div>
+	  	<div class="pagination-wrapper">
+	  		<button id="toQ3" class="pageBtn back-btn" data-target="page3">BACK <span class="left"></span></button>
+	      <div class="question-no">
+	        4/5
+	    	</div>
+	      <button id="toQ5" class="pageBtn next-btn saveQuestion" data-question="4" data-target="page5">NEXT <span class="right"></span></button>
+	  	</div>
+	  </div>
+	  <div id="page5" class="page">
+	  	<div id="q5" class="pageQuestion">
+	  	</div>
+	  	<div class="pagination-wrapper">
+	  		<button id="toQ4" class="pageBtn back-btn" data-target="page4">BACK <span class="left"></span></button>
+	      <div class="question-no">
+	        5/5
+	    	</div>
+	      <button id="toApply" class="pageBtn next-btn saveQuestion" data-question="5" data-target="applyPage">NEXT <span class="right"></span></button>
+	  	</div>
+	  </div>
+	 <!--  <div id="page6" class="page">
+	  	<div id="q6" class="pageQuestion">
+	  	</div>
+	  	<div class="pagination-wrapper">
+	  		<button id="toQ5" class="pageBtn back-btn" data-target="page5">BACK <span class="left"></span></button>
+	      <div class="question-no">
+	        6/6
+	    	</div>
+	    	<button id="toApply" class="pageBtn next-btn saveQuestion" data-question="6" data-target="applyPage">NEXT <span class="right"></span></button>
+	  	</div>
+	  </div> -->
+	  <div id="applyPage" class="page">
+	  	<div class="msg-wrapper">
+	      アンケートにご協力頂きありがとうございました。
+		  </div>
+		  <button id="toVideo" class="pageBtn shadow-2" data-target="videoPage">キャンペーンに応募</button>
+		  <div class="pagination-wrapper">
+				<button class="pageBtn back-btn" data-target="page3">BACK <span class="left"></span></button>
+		  </div>
+	  </div>
+	  <div id="videoPage" class="page">
+		  <div class="msg-wrapper">
+				動画視聴後に結果が表示されます。
+		  </div>
+		  <div class="vid-wrapper" id="vid">
+	    </div>
+<!-- 	    <div class="pagination-wrapper">
+			  <button id="toResult" class="pageBtn next-btn saveQuestion" data-target="resultPage">NEXT <span class="right"></span></button>
+		  </div> -->
+	  </div>
+	  <div id="resultPage" class="page">
+		  <div id="resultTitle">
+		  	Result Title
+		  </div>
+		  <div id="resultDescription">
+		  </div>
+		  <img id="resultImage" src="images/header-main.png" />
+		  <div id="resultInstruction">
+		  </div>
+		  <a id="couponLink"><button><div id="couponLoader" class="loader in-btn"></div><span id="getCoupon"><!-- クーポンを受け取る --></span></button></a>
+		  <div style="padding: 0px 15px;">
+			<div id="couponInfo">
+			  	<span style="color: #19AE48;">有効期限：</span>
+			  	<br>2018年10月23日まで
+					<br><span style="color: #19AE48;">交換場所：</span>
+					<br>東京23区内ファミリーマート店舗				 
+					<br><br><span style="color: #19AE48;">商品交換方法:</span>
+					<div class="bullets-wrapper">
+						<ol>
+							<li>Famiポート トップメニュー（トップ画面）で「クーポン券」にタッチ</li>
+							<li>シリアル番号をお持ちの方はこちら」ボタンをタッチ</li>
+							<li>クーポン発券用シリアル番号を入力</li>
+							<li>サービス内容を確認</li>
+							<li>クーポン券を発券</li>
+							<li>クーポンをレジまでお持ち下さい。</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+			<div style="margin-bottom: 20px;">
+		        商品の感想を下記にコメントください。
+		        <br><a href="https://twitter.com/ienomistyle" target="_blank">https://twitter.com/ienomistyle</a>
+		    </div>
+	  </div>
+  </div>
+</body>
+</html>

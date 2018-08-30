@@ -1,0 +1,74 @@
+.miniCheckbox {
+	position: relative;
+}
+
+.miniCheckbox label {
+	display: block;
+    padding-left: 40px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-weight: 600;
+    text-align: left;
+}
+
+.miniCheckbox input {
+    display: none;
+    position: absolute;
+    top: 0px;
+}
+
+.miniCheckbox input:disabled ~ label {
+	color: #CCCCCC;
+}
+
+.miniCheckbox .checkmark {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 4px;
+    height: 25px;
+    width: 25px;
+    background-color: white;
+    transition: all 0.3s;
+    /*border-radius: 6px;*/
+    border: 1px solid #536D79;
+    pointer-events: none;
+}
+
+.miniCheckbox input:disabled ~ .checkmark {
+	border-color: #CCCCCC;
+}
+
+.miniCheckbox .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    transition: all 0.3s;
+}
+
+.miniCheckbox input:checked ~ .checkmark {
+    /*background-color: #536D79;*/
+    background-color: #00bd4f;
+}
+
+/* Show the checkmark when checked */
+.miniCheckbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.miniCheckbox .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}

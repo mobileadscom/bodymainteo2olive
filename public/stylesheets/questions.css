@@ -1,0 +1,117 @@
+.question-wrapper {
+	font-weight: 600;
+  text-align: left;
+  padding: 20px 0px;
+}
+
+.answer-wrapper {
+  margin-bottom: 25px;
+}
+
+.answer, .m-answer {
+	text-align: left;
+  padding: 6px 10px 6px 30px;
+  position: relative;
+}
+
+.answer:hover, .m-answer:hover {
+	cursor: pointer;
+}
+
+.answer:before {
+	content: "";
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 2px solid #888888;
+  border-radius: 50%;
+  vertical-align: middle;
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s;
+}
+
+.m-answer:before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 2px solid #888888;
+  vertical-align: middle;
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s;
+}
+
+.answer:nth-child(odd), .m-answer:nth-child(odd) {
+  background-color: #eee;
+  /*background-color: #ffffb5;*/
+}
+
+.answer:nth-child(even), .m-answer:nth-child(even) {
+	background-color: #ddd;
+  /*background-color: #ffff89;*/
+}
+
+.answer .rad {
+	opacity: 0;
+	transition: all 0.3s;
+	width: 12px;
+	height: 12px;
+	background-color: #4F5640;
+  /*background-color: #3872da;*/
+	position: absolute;
+	left: 9px;
+	top: 50%;
+  transform: translateY(-50%);
+	border-radius: 50%;
+  pointer-events: none;
+}
+
+.m-answer .checkmark {
+  opacity: 0;
+  width: 8px;
+  height: 14px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: translateY(-50%) rotate(45deg);
+  -ms-transform: translateY(-50%) rotate(45deg);
+  transform: translateY(-50%) rotate(45deg);
+  position: absolute;
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.answer.selected:before {
+  /*border-color: #3872da;*/
+  border-color: #4F5640;
+}
+
+.m-answer.selected:before {
+/*  border-color: #536D79;
+  background-color: #536D79;*/
+  border-color: #3872da;
+  background-color: #3872da;
+}
+
+.answer.selected .rad, .m-answer.selected .checkmark {
+	opacity: 1;
+}
+
+.answer.input input[type="text"], .m-answer.input input[type="text"] {
+  display: block;
+  margin-top: 4px;
+  width: 100%;
+  max-width: 200px;
+}
+
+.answer.input input[disabled], .m-answer.input input[type="text"] {
+  pointer-events:none;
+}

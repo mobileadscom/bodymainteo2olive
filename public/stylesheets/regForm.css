@@ -1,0 +1,128 @@
+@media( min-width: 1px) {
+  #regMsg, #terms1Msg {
+    font-size: 14px;
+  }
+
+  .campaignInfo {
+    max-width: 360px;
+    margin: 15px auto;
+    border: 1px solid #19AE48;
+    border-radius: 4px;
+  }
+  
+  .regInstruction {
+    max-width: 360px; 
+    margin: auto; 
+    text-align: left;
+    margin-bottom: 15px;
+  }
+}
+
+@media( min-width: 480px) {
+  #regMsg, #terms1Msg {
+    font-size: 16px;
+  }
+
+  .campaignInfo {
+    max-width: 405px;
+    margin: 15px auto;
+    border: 1px solid #19AE48;
+    border-radius: 4px;
+  }
+  
+  .regInstruction {
+    max-width: 405px; 
+    margin: auto; 
+    text-align: left;
+    margin-bottom: 15px;
+  }
+}
+
+.campaignInfo {
+  padding: 5px 0px;
+}
+
+#formSecWrapper {
+    position: relative;
+    width: 100%;
+    height: 230px;
+}
+
+.modal-content #doneSec, .modal-content #regSec {
+  padding: 15px;
+  height: 210px;
+}
+
+.modal-content #doneSec {
+  display: none;
+}
+
+.form-loader {
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid #555555;
+  margin: auto;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  display: none;
+}
+
+#emailInput {
+  width: 100%;
+  display: block;
+  margin: 5px auto 15px;
+  max-width: 250px;
+  border-radius: 4px;
+  border: 1px solid #aaa;
+  padding: 8px 0px;
+  padding-left: 8px;
+  box-sizing: border-box;
+}
+
+#regWorking.form-loader {
+  position: static;
+  transform: none;
+  border: 5px solid #94E2EF;
+  border-top: 5px solid #1DA1F2;
+}
+
+#followBtn:hover {
+  cursor: pointer;
+}
+
+#successFollow {
+  width: 200px;
+  margin: auto;
+  margin-top: 15px;
+  border-radius: 2px;
+  padding: 6px;
+  font-weight: 600;
+  font-size: 16px;
+  -webkit-animation: appearIn 0.3s linear;
+  animation: appearIn 0.3s linear;
+  display: none;
+}
+
+#regButtons button, #submitBtn, #termsPage1 button {
+  background-color: #00bd4f;
+  border: none;
+  color: white;
+  padding: 6px 15px;
+  font-size: 16px;
+  border-radius: 6px;
+  width: 150px;
+  margin-top: 7px;
+  margin-bottom: 5px;
+}
+
+#regButtons button:hover, #submitBtn:hover, #termsPage1 button:hover {
+  cursor: pointer;
+  background-color: #00984f;
+}
