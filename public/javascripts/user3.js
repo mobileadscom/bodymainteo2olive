@@ -7,8 +7,8 @@ firebase.initializeApp(firebaseConfig);
 var domain = 'https://www.mobileads.com';
 var apiDomain = 'https://api.mobileads.com';
 // var domain = 'http://192.168.99.100';
-var userCollection = 'testCol2';
-var couponCollection = 'FamilyMartCoupons';
+var userCollection = 'BodyMainteUsers';
+var couponCollection = 'BodyMainteCoupons';
 var functionsDomain = 'https://us-central1-familymarto2o.cloudfunctions.net/twitter';
 
 var campaignId = 'ca8ca8c34a363fa07b2d38d007ca55c6';
@@ -34,7 +34,7 @@ var user = {
 	},
 	get: function(userId) {
 		/* this is using the old mysql database. Not using Now */
-    return axios.get(apiDomain + '/coupons/user_info', {
+    return axios.get(apiDomain + '/coupons/bm/user_info', {
       params: {
         id: userId
       }
@@ -79,7 +79,7 @@ var user = {
 		// regForm.append('id', userId);
 		// return axios.post(apiDomain + '/coupons/user_register', regForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 
-		return axios.post(apiDomain + '/coupons/user_register?id=' + userId);
+		return axios.post(apiDomain + '/coupons/bm/user_register?id=' + userId);
 		/* mongoDB */
 		/*return new Promise(function(resolve, reject) {
 			var userQuery = JSON.stringify({
@@ -159,7 +159,7 @@ var user = {
 	  return firebase.auth().signInWithPopup(provider);
 	},
 	isFollowingTwitter: function() {
-		return axios.post(functionsDomain + '/getUser', {
+		return axios.post(functionsDomain + '/checkFriendship', {
       token: this.twitter.token,
       tokenSecret: this.twitter.secret,
       id: this.info.id
@@ -216,7 +216,7 @@ var user = {
 	mark: function(userId, state, groups) {
 		var groupJSON = JSON.stringify(groups);
 		console.log(groupJSON);
-		return axios.post(apiDomain + '/coupons/mark_user?id=' + userId + '&state=' + state + '&groups=' + groupJSON);
+		return axios.post(apiDomain + '/coupons/bm/mark_user?id=' + userId + '&state=' + state + '&groups=' + groupJSON);
 		/* mongoDB */
 		/*return new Promise(function(resolve, reject) {
 			var userQuery = JSON.stringify({

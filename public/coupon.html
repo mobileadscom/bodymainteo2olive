@@ -7,21 +7,19 @@
 </head>
 <body>    
   <header>
-  	<div class="banner">
+    <div class="banner">
       <img src="img/header-new.png" />
-  	</div>
+    </div>
   </header>
   <div>
     <div id="couponPage" style="display: none;">
       <div style="padding: 0px 15px;">
-      	<div id="couponNumber">
-    	  	123456
-      	</div>
-    	  <div id="couponInfo">
-          <span style="color: #19AE48;font-weight: 600;">クーポン発券期限：</span>
-          <br>2018年9月9日まで
-          <br><br><span style="color: #19AE48;font-weight: 600;">商品引換期限：</span>
-          <br>2018年9月10日まで
+        <div id="couponNumber">
+          123456
+        </div>
+        <div id="couponInfo">
+          <span style="color: #19AE48;font-weight: 600;">有効期限：</span>
+          <br>2018年10月23日まで
           <br><br><span style="color: #19AE48;font-weight: 600;">交換場所：</span>
           <br>全国のファミリーマート店舗
           <br><br><span style="color: #19AE48;font-weight: 600;">Famiポート操作手順：</span>
@@ -57,7 +55,7 @@
           </div>
           <br>発券されるクーポン券面の注意事項もお読みくださいますようお願い申し上げます。
         </div>
-    	</div>
+      </div>
       <div style="margin-bottom: 20px;">
         商品の感想を下記にコメントください。
         <br><a href="https://twitter.com/ienomistyle" target="_blank">https://twitter.com/ienomistyle</a>
@@ -66,7 +64,7 @@
     <div id="surveyPage" style="display: none;">
       <span style="color: #0193DD; font-size: 16px;">アンケートに答えて商品をGet!
       <br>抽選で17,000名様に商品をプレゼント</span>
-      <br><br><a href="https://couponcampaign.ienomistyle.com/%E3%82%B5%E3%83%A9%E3%83%80%E3%82%B9%E3%83%A0%E3%83%BC%E3%82%B8%E3%83%BCLIVE/" style="font-size: 14px;">https://couponcampaign.ienomistyle.com/サラダスムージーLIVE/</a>
+      <br><br><a href="https://couponcampaign.ienomistyle.com/%25E3%2583%259C%25E3%2583%2587%25E3%2582%25A3%25E3%2583%25A1%25E3%2583%25B3%25E3%2583%2586%25E3%2583%2589%25E3%2583%25AA%25E3%2583%25B3%25E3%2582%25AF/" style="font-size: 14px;">https://couponcampaign.ienomistyle.com/ボディメンテドリンク/</a>
     </div>
     <div id="loserPage" style="display: none;">
       <div id="resultTitle" style="color: red;">残念！</div>
@@ -99,32 +97,37 @@ function getParams() {
   return query_string;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  var params = getParams();
-  window.params = params;
-  if (params.userId) {
-    if (window.XMLHttpRequest) {
-        xmlhttp = new XMLHttpRequest();
-     } else {
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        var response = this.responseText ? JSON.parse(this.responseText) : {};
-        // var response = JSON.parse(this.responseText);
-        console.log(response);
-        if (response.couponCode) {
-          document.getElementById('couponNumber').innerHTML = response.couponCode;
-          document.getElementById('couponPage').style.display = 'block';
+function trackCouponView(couponCode, userId) {
+  if (window.location.hostname.indexOf('localhost') < 0 && window.location.protocol != 'file:') { 
+  var timestamp = Date.now();
+  var pixel = document.createElement('img');
+  pixel.src = 'https://track.richmediaads.com/a/analytic.htm?uid=0&isNew={{isNew}}&referredUrl={{referredUrl}}&rmaId=2&domainId=0&pageLoadId=' + timestamp + '&userId=4831&pubUserId=0&campaignId=e32e385370b2e04d225d2dfa5497483b&browser={{browser}}&os={{os}}&domain={{domain}}&callback=trackSuccess&type=coupon_view&tt=E&value=' + couponCode + '&ty=E&uniqueId=' + userId;
+    document.body.appendChild(pixel);
+  }
+}
 
+function showCouponCode(couponCode) {
+  document.getElementById('couponNumber').innerHTML = couponCode;
+  document.getElementById('couponPage').style.display = 'block';
+}
 
-          var timestamp = Date.now();
-          var pixel = document.createElement('img');
-          pixel.src = 'https://track.richmediaads.com/a/analytic.htm?uid=0&isNew={{isNew}}&referredUrl={{referredUrl}}&rmaId=2&domainId=0&pageLoadId=' + timestamp + '&userId=4831&pubUserId=0&campaignId=e32e385370b2e04d225d2dfa5497483b&browser={{browser}}&os={{os}}&domain={{domain}}&callback=trackSuccess&type=coupon_view&tt=E&value=' + response.couponCode + '&ty=E&uniqueId=' + params.userId;
-            document.body.appendChild(pixel);
+function renderFromAPI(userId) {
+  if (window.XMLHttpRequest) {
+      xmlhttp = new XMLHttpRequest();
+  } else {
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var response = this.responseText ? JSON.parse(this.responseText) : {};
+      console.log(response);
+      try {
+        if (response.user.couponCode) {
+          showCouponCode(response.user.couponCode);
+          trackCouponView(response.user.couponCode, params.userId);
         }
         else {
-          if (response.state == "lose") {
+          if (response.user.state == "lose") {
             document.getElementById('loserPage').style.display = 'block';
           }
           else {
@@ -132,15 +135,46 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
       }
-      else if (this.readyState == 4 && this.status != 200) {
+      catch (error) {
+        console.error(error);
         document.getElementById('surveyPage').style.display = 'block';
       }
-    };
-    var userQuery = JSON.stringify({
-      id: params.userId
-    });
-    xmlhttp.open("GET", 'https://api.mobileads.com/mgd/qOne?col=FamilyMartUsers&qobj=' + encodeURIComponent(userQuery), true);
-    xmlhttp.send();
+    }
+    else if (this.readyState == 4 && this.status != 200) {
+      document.getElementById('surveyPage').style.display = 'block';
+    }
+  };
+
+  xmlhttp.open("GET", 'https://api.mobileads.com/coupons/bm/user_info?id=' + params.userId);
+  xmlhttp.send();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var params = getParams();
+  window.params = params;
+  if (params.userId) {
+    try {
+      if (localStorage.getItem('localCoupon')) {
+        var couponCode = localStorage.getItem('localCoupon');
+        var user = localStorage.getItem('localUser');
+        if (user == params.userId) {
+          console.log('1');
+          showCouponCode(couponCode);
+          trackCouponView(couponCode, params.userId);
+        }
+        else {
+          console.log('2');
+          renderFromAPI(params.userId);
+        }
+      }
+      else {
+        console.log('3');
+        renderFromAPI(params.userId);
+      }
+    } catch(err) {
+      console.log('4');
+      renderFromAPI(params.userId);
+    }
   }
   else {
     console.log('no params found');
@@ -184,8 +218,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .banner {
   width: 100%;
+  background-color: #4F5640;
   text-align: left;
-  background-image: url('img/header-bg-new.png');
+/*  background-image: url('../images/header-bg-new.png');*/
   background-size: auto 100%;
   background-repeat: repeat-x;
 }
@@ -197,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 body {
-	margin: 0px;
+  margin: 0px;
   text-align: center;
   height: 100%;
   overflow-x: hidden;
@@ -205,13 +240,13 @@ body {
 }
 
 #couponNumber {
-	margin: 30px auto 20px;
-	color: #0193DD;
-	padding: 5px;
-	border-radius: 4px;
-	border: 1px solid #0193DD;
-	font-size: 28px;
-	max-width: 360px;
+  margin: 30px auto 20px;
+  color: #0193DD;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #0193DD;
+  font-size: 28px;
+  max-width: 360px;
 }
 
 #couponInfo {
