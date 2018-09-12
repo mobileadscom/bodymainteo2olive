@@ -98,12 +98,12 @@ function getParams() {
 }
 
 function trackCouponView(couponCode, userId) {
-  if (window.location.hostname.indexOf('localhost') < 0 && window.location.protocol != 'file:') { 
+ /* if (window.location.hostname.indexOf('localhost') < 0 && window.location.protocol != 'file:') { 
   var timestamp = Date.now();
   var pixel = document.createElement('img');
   pixel.src = 'https://track.richmediaads.com/a/analytic.htm?uid=0&isNew={{isNew}}&referredUrl={{referredUrl}}&rmaId=2&domainId=0&pageLoadId=' + timestamp + '&userId=4831&pubUserId=0&campaignId=e32e385370b2e04d225d2dfa5497483b&browser={{browser}}&os={{os}}&domain={{domain}}&callback=trackSuccess&type=coupon_view&tt=E&value=' + couponCode + '&ty=E&uniqueId=' + userId;
     document.body.appendChild(pixel);
-  }
+  }*/
 }
 
 function showCouponCode(couponCode) {
@@ -124,7 +124,7 @@ function renderFromAPI(userId) {
       try {
         if (response.user.couponCode) {
           showCouponCode(response.user.couponCode);
-          trackCouponView(response.user.couponCode, params.userId);
+          // trackCouponView(response.user.couponCode, params.userId);
         }
         else {
           if (response.user.state == "lose") {
@@ -154,13 +154,13 @@ document.addEventListener('DOMContentLoaded', function() {
   window.params = params;
   if (params.userId) {
     try {
-      if (localStorage.getItem('localCoupon')) {
-        var couponCode = localStorage.getItem('localCoupon');
-        var user = localStorage.getItem('localUser');
+      if (localStorage.getItem('bmCoupon')) {
+        var couponCode = localStorage.getItem('bmCoupon');
+        var user = localStorage.getItem('bmUser');
         if (user == params.userId) {
           console.log('1');
           showCouponCode(couponCode);
-          trackCouponView(couponCode, params.userId);
+          // trackCouponView(couponCode, params.userId);
         }
         else {
           console.log('2');

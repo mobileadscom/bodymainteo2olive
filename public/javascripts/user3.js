@@ -409,22 +409,22 @@ var user = {
 		return axios.post(domain + '/api/coupon/softbank/api_call', psForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 	},
 	saveLocal: function(userId, couponCode, state) {
-		window.localStorage.setItem('localUser', userId);
-		window.localStorage.setItem('localCoupon', couponCode);
-		window.localStorage.setItem('localState', state);
+		window.localStorage.setItem('bmUser', userId);
+		window.localStorage.setItem('bmCoupon', couponCode);
+		window.localStorage.setItem('bmState', state);
 	},
 	loadLocal: function() {
-		if (window.localStorage.getItem('localUser')) {
-			user.info.id = window.localStorage.getItem('localUser');
-			user.info.couponCode = window.localStorage.getItem('localCoupon');
-			user.info.state = window.localStorage.getItem('localState');
+		if (window.localStorage.getItem('bmUser')) {
+			user.info.id = window.localStorage.getItem('bmUser');
+			user.info.couponCode = window.localStorage.getItem('bmCoupon');
+			user.info.state = window.localStorage.getItem('bmState');
 		}
 	},
 	clearLocal: function() {
-		window.localStorage.removeItem('localUser');
-		window.localStorage.removeItem('localCoupon');
-		window.localStorage.removeItem('localState');	
-		window.localStorage.removeItem('localAnswers');	
+		window.localStorage.removeItem('bmUser');
+		window.localStorage.removeItem('bmCoupon');
+		window.localStorage.removeItem('bmState');	
+		window.localStorage.removeItem('bmAnswers');	
 	}
 };
 

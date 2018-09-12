@@ -123,8 +123,8 @@ var app = {
 	},
 	continue: function() {
 		var answerJson = '{}';
-		if (localStorage.getItem('localAnswers')) {
-			answerJson = localStorage.getItem('localAnswers');
+		if (localStorage.getItem('bmAnswers')) {
+			answerJson = localStorage.getItem('bmAnswers');
 		}
 		var noQuestionAnswered = 0;
 		// for multiple user per browser
@@ -239,7 +239,7 @@ var app = {
         else if (response.data.message == 'user exist.') {
         	user.info = response.data.user;
         	user.isWanderer = false;
-        	if (window.localStorage.getItem('localAnswers')) { // for single user per browser
+        	if (window.localStorage.getItem('bmAnswers')) { // for single user per browser
 						user.loadLocal();
 					}
 					else {
@@ -361,7 +361,7 @@ var app = {
     	else { // user is registered
     		user.isWanderer = false;
 				user.info = response.data.user;
-				if (window.localStorage.getItem('localAnswers')) { // for single user per browser
+				if (window.localStorage.getItem('bmAnswers')) { // for single user per browser
 					user.loadLocal();
 				}
 				else {
@@ -407,7 +407,7 @@ var app = {
 			  	}
 			  	// localAnswers[user.info.id] = qArray; // for multiple user per browser
 			  	// localStorage.setItem('localAnswers', JSON.stringify(localAnswers)); // for multiple user per browser
-			  	localStorage.setItem('localAnswers', JSON.stringify(qArray)); // for single user per browser
+			  	localStorage.setItem('bmAnswers', JSON.stringify(qArray)); // for single user per browser
 	  		}
 	  		var qNo = parseInt(e.target.dataset.question);
 	  		// user.trackAnswer(user.info.id, qNo, this.q[qNo].selectedAnswer);
@@ -527,7 +527,7 @@ var app = {
 	  
 	  this.q[4] = new singleAnswerQuestion({
 	  	wrapper: document.getElementById('q4'),
-	  	question: '<span class="red">QUESTION 3</span><br>コンビニに行く頻度を教えてください。',
+	  	question: '<span class="red">QUESTION 4</span><br>コンビニに行く頻度を教えてください。',
 	  	answers: [{
 	    	value: '毎日',
 	    	text: '毎日',
@@ -558,7 +558,7 @@ var app = {
 
 	  this.q[5] = new singleAnswerQuestion({
 	  	wrapper: document.getElementById('q5'),
-	  	question: '<span class="red">QUESTION 3</span><br>ペットボトル飲料を飲む頻度を教えてください。',
+	  	question: '<span class="red">QUESTION 5</span><br>ペットボトル飲料を飲む頻度を教えてください。',
 	  	answers: [{
 	    	value: '毎日',
 	    	text: '毎日',
@@ -593,7 +593,7 @@ var app = {
 		  user.isWanderer = true;
 		  var t = delay || 100;
 	    setTimeout(() => {
-	    	if (localStorage.getItem('localUser')) { // this browser already have user
+	    	if (localStorage.getItem('bmUser')) { // this browser already have user
 					user.isWanderer = false;
 					user.source = this.params.source;
 					user.loadLocal();
@@ -608,7 +608,7 @@ var app = {
 		  }, t);
 	  }
 	  else {
-			if (localStorage.getItem('localUser')) { // for single user per browser
+			if (localStorage.getItem('bmUser')) { // for single user per browser
 				user.loadLocal();
 				this.enableSaveAnswer();
 				this.continue();
@@ -649,7 +649,7 @@ var app = {
 	  	user.clearLocal();
 	  }
 
-	  var localUser = localStorage.getItem('localUser');
+	  var localUser = localStorage.getItem('bmUser');
 		if (localUser) {
 		  user.get(localUser).then((response) => {
 				console.log(response);
