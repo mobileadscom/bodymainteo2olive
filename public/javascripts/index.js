@@ -581,8 +581,8 @@ var app = {
 	    	value: '月1回未満',
 	    	text: '月1回未満'
 	    }, {
-	    	value: '殆ど行かない',
-	    	text: '殆ど行かない'
+	    	value: '殆ど飲まない',
+	    	text: '殆ど飲まない'
 	    }],
 	    nextBtn: document.getElementById('toApply')
 	  });
