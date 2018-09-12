@@ -38,7 +38,8 @@ var app = {
 		  return query_string;
 	},
 	generateCouponLink(userId) {
-		return 'https://couponcampaign.ienomistyle.com/ボディメンテドリンク/coupon.html?userId=' + userId; 
+		// return 'https://couponcampaign.ienomistyle.com/ボディメンテドリンク/coupon.html?userId=' + userId; 
+		return 'https://s3.amazonaws.com/rmarepo/o2o/ボディメンテドリンク/coupon.html?userId=' + userId;
 	},
 	initResult(state, couponLink) {
 		if (state == 'win') {
@@ -232,7 +233,8 @@ var app = {
         spinner.style.display = 'none';
         if (response.data.status == true) {
         	this.formSections.toPage('doneSec');
-        	var emailContent = '<head><meta charset="utf-8"></head>ご登録ありがとうございました。下記にあるリンクをクリックしてください。その後キャンペーンへの参加をお願いします<br><br><a href="https://couponcampaign.ienomistyle.com/ボディメンテドリンク/?userId=' + email + '" target="_blank">https://couponcampaign.ienomistyle.com/ボディメンテドリンク/?userId=' + email + '</a>';
+        	// var emailContent = '<head><meta charset="utf-8"></head>ご登録ありがとうございました。下記にあるリンクをクリックしてください。その後キャンペーンへの参加をお願いします<br><br><a href="https://couponcampaign.ienomistyle.com/ボディメンテドリンク/?userId=' + email + '" target="_blank">https://couponcampaign.ienomistyle.com/ボディメンテドリンク/?userId=' + email + '</a>';
+        	var emailContent = '<head><meta charset="utf-8"></head>ご登録ありがとうございました。下記にあるリンクをクリックしてください。その後キャンペーンへの参加をお願いします<br><br><a href="https://s3.amazonaws.com/rmarepo/o2o/ボディメンテドリンク/index.html?userId=' + email + '" target="_blank">https://s3.amazonaws.com/rmarepo/o2o/ボディメンテドリンク/index.html?userId=' + email + '</a>';
         	user.sendEmail(email, 'Ienomistyle クーポンキャンペーン', emailContent);
         	// user.trackRegister(email);
         }
