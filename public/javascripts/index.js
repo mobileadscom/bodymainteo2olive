@@ -2,9 +2,8 @@ import miniPages from './miniPages';
 import {singleAnswerQuestion, multipleAnswerQuestion, dropdownQuestion} from './questions';
 import miniSelect from './miniSelect';
 import modal from './modal';
-// import {winningLogic, coupon} from './winningLogic';
 import winningLogic from './winningLogic2';
-import user from './user3';
+import user from './user4';
 import '../stylesheets/miniSelect.css';
 import '../stylesheets/style.css';
 import '../stylesheets/miniCheckbox.css';
@@ -17,6 +16,7 @@ var app = {
 	params: {}, // params in query string
 	q: [], // array of questions
 	player: null, //youtube player
+	localObj: user.getLocal(), // localStorage object
 	getParams: function() {
 		  var query_string = {};
 		  var query = window.location.search.substring(1);
@@ -333,35 +333,36 @@ var app = {
 		/* check if user is registered, if no, then register user, if yes, continue on where the user left off */
 		user.get(userId).then((response) => {
 			console.log(response);
-    	if (response.data.status == false) { // user is not registered
-	    	if (autoRegister) {
-	    		user.register(userId).then((res) => { // auto register user
+	    	if (response.data.status == false) { // user is not registered
+		    	if (autoRegister) {
+		    		user.register(userId).then((res) => { // auto register user
 						console.log(res);
 						user.isWanderer = false;
 						user.info.id = userId;
 						user.source = this.params.source;
-						user.saveLocal(userId, '', '-'); // for single user per browser
+						user.saveLocal(userId, '', '-', this.params.source); // for single user per browser
 						if (isTwitter) {
 							this.checkTwitter();
 						}
 						else {
 							this.continue();
 						}
-					  this.enableSaveAnswer();
+						this.enableSaveAnswer();
 					  // user.trackRegister(userId);
-	    		}).catch((err) => {
-	    			user.isWanderer = true;
-	    			console.log(err);
-	    			this.pages.toPage('termsPage1');
-	    		});
+		    		}).catch((err) => {
+		    			user.isWanderer = true;
+		    			alert('error page');
+		    			console.log(err);
+		    			// this.pages.toPage('termsPageFM');
+		    		});
+		    	}
+		    	else {
+		    		this.pages.toPage('termsPageFM');
+		    		this.enableSaveAnswer();
+		    	}
 	    	}
-	    	else {
-	    		this.pages.toPage('termsPage1');
-	    		this.enableSaveAnswer();
-	    	}
-    	}
-    	else { // user is registered
-    		user.isWanderer = false;
+	    	else { // user is registered
+	    		user.isWanderer = false;
 				user.info = response.data.user;
 				if (window.localStorage.getItem('bmAnswers')) { // for single user per browser
 					user.loadLocal();
@@ -377,12 +378,12 @@ var app = {
 					this.continue();
 				}
 				this.enableSaveAnswer();
-    	}
-    }).catch((error) => {
-    	user.isWanderer = true;
+	    	}
+	    }).catch((error) => {
+	    	user.isWanderer = true;
 			console.log(error);
-			this.pages.toPage('termsPage1');
-    });
+			this.pages.toPage('termsPageFM');
+	    });
 	},
 	enableSaveAnswer: function() {
     /* Auto save answer for every questions*/
@@ -591,25 +592,56 @@ var app = {
 	  /* ==== Questions End ==== */
 	},
 	start: function(delay) {
-		if (!this.params.userId || !this.params.source) {
-		  user.isWanderer = true;
-		  var t = delay || 100;
-	    setTimeout(() => {
-	    	if (localStorage.getItem('bmUser')) { // this browser already have user
-					user.isWanderer = false;
-					user.source = this.params.source;
-					user.loadLocal();
-					this.enableSaveAnswer();
-					this.continue();
+		if (this.localObj.status == true) { // this browser already have user
+			user.isWanderer = false;
+			user.loadLocal();
+			this.enableSaveAnswer();
+			this.continue();
+		}
+		else {
+			if (this.params.source) {
+				if (this.params.userId) {
+					this.initUser(this.params.userId, false);
 				}
 				else {
-			    // this.pages.toPage('regPage');
-			    // this.pages.toPage('page1');
-			    this.pages.toPage('termsPage1');
-			  }
-		  }, t);
-	  }
-	  else {
+					if (this.params.source == 'FamilyMart') {
+						this.pages.toPage('termsPageFM');
+					}
+					else if (this.params.source == 'CircleK') {
+						this.pages.toPage('termsPageCK');
+					}
+					else {
+						user.isWanderer = true;
+						alert('invalid source');
+					}
+				}
+			}
+			else {
+				user.isWanderer = true;
+				alert('no source!');
+			}
+		}
+		
+		/*if (!this.params.userId || !this.params.source) {
+			user.isWanderer = true;
+			var t = delay || 100;
+		    setTimeout(() => {
+		    	if (localStorage.getItem('bmUser')) { // this browser already have user
+						user.isWanderer = false;
+						user.source = this.params.source;
+						user.loadLocal();
+						this.enableSaveAnswer();
+						this.continue();
+					}
+					else {
+						alert('no source!')
+					    // this.pages.toPage('regPage');
+					    // this.pages.toPage('page1');
+					    this.pages.toPage('termsPageFM');
+					}
+			}, t);
+		}
+		else {
 			if (localStorage.getItem('bmUser')) { // for single user per browser
 				user.loadLocal();
 				this.enableSaveAnswer();
@@ -618,85 +650,82 @@ var app = {
 			else {
 				this.initUser(this.params.userId, false);
 			}
-		}
+		}*/
 	},
 	init: function() {
 		var vidWidth = document.getElementById('vid').clientWidth;
-    var vidHeight = document.getElementById('vid').clientHeight;
+	    var vidHeight = document.getElementById('vid').clientHeight;
 
 		/* init pagination */
 		this.params = this.getParams();
-		this.params.source = 'source1'; // dummy source
+		// this.params.source = 'source1'; // dummy source
 		this.pages = new miniPages({
-	  	pageWrapperClass: document.getElementById('page-wrapper'),
-	  	pageClass: 'page',
-	  	initialPage: document.getElementById('loadingPage'),
-	  	pageButtonClass: 'pageBtn'
-	  });
+		  	pageWrapperClass: document.getElementById('page-wrapper'),
+		  	pageClass: 'page',
+		  	initialPage: document.getElementById('loadingPage'),
+		  	pageButtonClass: 'pageBtn'
+		});
 
-	  /* init registration form sections */
-	  this.formSections = new miniPages({
-	  	pageWrapperClass: document.getElementById('formSecWrapper'),
-	  	pageClass: 'sec',
-	  	initialPage: document.getElementById('regSec')
-	  });
+		/* init registration form sections */
+		this.formSections = new miniPages({
+		  	pageWrapperClass: document.getElementById('formSecWrapper'),
+		  	pageClass: 'sec',
+		  	initialPage: document.getElementById('regSec')
+		});
     
-    this.setQuestions();
-    this.events();
-    /* apply mini select to <select> */
-	  miniSelect.init('miniSelect');
+	    this.setQuestions();
+	    this.events();
+	    
+	    /* apply mini select to <select> */
+		miniSelect.init('miniSelect');
 
-	  /* User Info */
-	  if (this.params.userId) {
-	  	user.clearLocal();
-	  }
-
-	  var localUser = localStorage.getItem('bmUser');
-		if (localUser) {
-		  user.get(localUser).then((response) => {
+		/* User Info */
+		if (this.params.userId) {
+		  	user.clearLocal();
+		}
+		
+		if (this.localObj.status == true) {
+			user.get(this.localObj.userObj.id).then((response) => {
 				console.log(response);
-	    	if (response.data.status == false && response.data.message != 'error') { // user is not registered
-		    	user.clearLocal(); // db has been cleared, clear local storage also
-	    	}
-			  this.start();
-	    });
+		    	if (response.data.status == false && response.data.message != 'error') { // user is not registered
+			    	user.clearLocal(); // db has been cleared, clear local storage also
+		    	}
+				this.start();
+		    });
 		}
 		else {
 			this.start(1000);
 		}
-
-    /* get coupons */
-		// coupon.get(this.params.source);
 	  
-	  var processed = false; // check if result has been processed to avoid double result processsing
+		var processed = false; // check if result has been processed to avoid double result processsing
 
 		//youtube api
-    var ytScript = document.createElement('script');
-    ytScript.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(ytScript, firstScriptTag);
-    
-    window.onYouTubeIframeAPIReady = () => {
-      this.player = new YT.Player('vid', {
-        height: vidHeight.toString(),
-        width: vidWidth.toString(),
-        playerVars: {'rel': 0,'showinfo': 0, 'controls': 0, 'playsinline': 1},
-        videoId: 'mWzzKVZ15LE',
-        events: {
-          'onStateChange': (event) => {
-            if (event.data == YT.PlayerState.ENDED) {
-            	console.log(winningLogic.processed);
-            	if (!winningLogic.processed) {
-					this.initResult('lose');
-				}
-				else {
-					this.pages.toPage('resultPage');
-				}
-            }
-          }
-        }
-      });
-    }
+	    var ytScript = document.createElement('script');
+	    ytScript.src = "https://www.youtube.com/iframe_api";
+	    var firstScriptTag = document.getElementsByTagName('script')[0];
+	    firstScriptTag.parentNode.insertBefore(ytScript, firstScriptTag);
+	    
+	    window.onYouTubeIframeAPIReady = () => {
+	        this.player = new YT.Player('vid', {
+		        height: vidHeight.toString(),
+		        width: vidWidth.toString(),
+		        playerVars: {'rel': 0,'showinfo': 0, 'controls': 0, 'playsinline': 1},
+		        videoId: 'mWzzKVZ15LE',
+		        events: {
+		            'onStateChange': (event) => {
+			            if (event.data == YT.PlayerState.ENDED) {
+			            	console.log(winningLogic.processed);
+			            	if (!winningLogic.processed) {
+								this.initResult('lose');
+							}
+							else {
+								this.pages.toPage('resultPage');
+							}
+			            }
+		            }
+		        }
+		    });
+	    }
 	}
 }
 
@@ -708,5 +737,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 export {
+	app,
 	user
 }

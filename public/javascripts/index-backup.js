@@ -2,8 +2,9 @@ import miniPages from './miniPages';
 import {singleAnswerQuestion, multipleAnswerQuestion, dropdownQuestion} from './questions';
 import miniSelect from './miniSelect';
 import modal from './modal';
-import {winningLogic, coupon} from './winningLogic';
-import user from './user';
+// import {winningLogic, coupon} from './winningLogic';
+import winningLogic from './winningLogic2';
+import user from './user3';
 import '../stylesheets/miniSelect.css';
 import '../stylesheets/style.css';
 import '../stylesheets/miniCheckbox.css';
@@ -36,11 +37,15 @@ var app = {
 		  } 
 		  return query_string;
 	},
+	generateCouponLink(userId) {
+		// return 'https://couponcampaign.ienomistyle.com/ボディメンテドリンク/coupon.html?userId=' + userId; 
+		return 'https://s3.amazonaws.com/rmarepo/o2o/ボディメンテドリンク/coupon.html?userId=' + userId;
+	},
 	initResult(state, couponLink) {
 		if (state == 'win') {
 			document.getElementById('resultTitle').innerHTML = "おめでとうございます！";
 			document.getElementById('resultTitle').style.color = '#0193DD';
-			document.getElementById('resultDescription').innerHTML = "サラダスムージーが当たりました。";
+			document.getElementById('resultDescription').innerHTML = "ボディメンテ ドリンクが当たりました。";
 			if (user.isWanderer) {
 				document.getElementById('couponLink').style.display = 'none';
 				document.getElementById('resultInstruction').style.display = 'none;'
@@ -70,70 +75,57 @@ var app = {
 	processResult() {
 		winningLogic.process(this.q, !user.isWanderer).then((resultProperties) => {
 			console.log(resultProperties);
-			var state = resultProperties.trackingResult;
 			var actualResult = resultProperties.actualResult;
 			var group = resultProperties.group;
-			var flag = resultProperties.flag;
-			var couponInfo = resultProperties.couponInfo;
-
 			if (!user.isWanderer) {
-				if (actualResult == 'win') {
-					user.win(user.info.id, group, user.source, couponInfo).then((response) => {
-						console.log(response);
-						if (response.data.couponLink) {
-							user.saveLocal(user.info.id, response.data.couponLink, 'win');
-							this.initResult('win', response.data.couponLink);
-							var message = 'サラダスムージークーポンが当たりました! ' + encodeURI(response.data.couponLink);
-
-							if (user.info.id.indexOf('@') > -1) { // login via email
-			        	var emailContent = '<head><meta charset="utf-8"></head><div style="text-align:center;font-weight:600;color:#FF4244;font-size:28px;">おめでとうございます</div><br><br><div style="text-align:center;font-weight:600;">クーポンが当たりました！</div><a href="' + response.data.couponLink + '" target="_blank" style="text-decoration:none;"><button style="display:block;margin:20px auto;margin-bottom:40px;border-radius:5px;background-color:#E54C3C;border:none;color:white;width:200px;height:50px;font-weight:600;">クーポンを受取る</button></a>';
-		        	  user.sendEmail(user.info.id, 'Ienomistyle クーポンキャンペーン', emailContent);
-							}
-							else {
-								user.messageTwitter(message);
-							}
-							// user.passResult(user.info.id, flag, user.source, couponInfo.couponLink);
+				user.mark(user.info.id, actualResult, group).then((response) => {
+					winningLogic.processed = true;
+					console.log(response)
+					if (response.data.couponCode) {
+						var couponLink = this.generateCouponLink(user.info.id);
+						user.saveLocal(user.info.id, response.data.couponCode, 'win'); //rmb allow this back
+						this.initResult('win', couponLink);
+						var message = 'サラダスムージークーポンが当たりました! ' + encodeURI(couponLink);
+						if (user.info.id.indexOf('@') > -1) { // login via email
+				        	var emailContent = '<head><meta charset="utf-8"></head><div style="text-align:center;font-weight:600;color:#FF4244;font-size:28px;">おめでとうございます</div><br><br><div style="text-align:center;font-weight:600;">クーポンが当たりました！</div><a href="' + couponLink + '" target="_blank" style="text-decoration:none;"><button style="display:block;margin:20px auto;margin-bottom:40px;border-radius:5px;background-color:#E54C3C;border:none;color:white;width:200px;height:50px;font-weight:600;">クーポンを受取る</button></a>';
+				        	 user.sendEmail(user.info.id, 'Ienomistyle クーポンキャンペーン', emailContent);
 						}
 						else {
-							this.initResult('lose');
-							user.saveLocal(user.info.id, '', 'lose');
-							// user.passResult(user.info.id, flag, user.source);
+							user.messageTwitter(message);
 						}
-					}).catch((error) => {
-	  				console.log(error);
-		  			this.initResult('win');
-	  			});
+						// user.passResult(user.info.id, flag, user.source, couponInfo.couponLink);
+					}
+					else {
+						user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
+						this.initResult('lose');
+					}
+				}).catch((error) => {
+					console.log(error);
+					winningLogic.processed = true;
+					user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
+		  			this.initResult('lose');
+				});
+
+	  		if (actualResult == 'win') {
+	  			// track win
+	  			// make loser
+	  			// user.trackWin(user.info.id, 'lose');
 	  		}
 	  		else {
-	  			user.lose(user.info.id, user.source).then((response) => {
-	  				console.log(response);
-	  				// user.passResult(user.info.id, flag, user.source);
-	  			}).catch((error) => {
-	  				console.log(error);
-	  			});
-	  			user.saveLocal(user.info.id, '', 'lose');
-	  			this.initResult('lose');
-	  		}
-
-	  		// if (state == 'win') {
-	  			//track win
-	  			// user.trackWin(user.info.id);
-	  		// }
-	  		// else {
-	  			// user.trackLose(user.info.id);
 	  			// track lose
-	  		// }
+	  			// user.trackLose(user.info.id);
+	  		}
 
 			}
 			else {
-				this.initResult(state);
+				this.initResult(actualResult);
 			}	
 		});
 	},
 	continue: function() {
 		var answerJson = '{}';
-		if (localStorage.getItem('localAnswers')) {
-			answerJson = localStorage.getItem('localAnswers');
+		if (localStorage.getItem('bmAnswers')) {
+			answerJson = localStorage.getItem('bmAnswers');
 		}
 		var noQuestionAnswered = 0;
 		// for multiple user per browser
@@ -172,7 +164,7 @@ var app = {
 
 		if (user.info.state == 'win') {
 			console.log(user.info);
-			this.initResult('win', user.info.couponLink);
+			this.initResult('win', this.generateCouponLink(user.info.id));
 			this.pages.toPage('resultPage');
 		}
 		else if (user.info.state == 'lose') {
@@ -219,13 +211,12 @@ var app = {
 	  }
 	  
 	  /* Finished Answering Questions, process result */
-	  /*var processed = false;
-	  document.getElementById('toResult').addEventListener('click', () => {
-	  	if (!processed) {
-	  		processed = true;
+	  document.getElementById('toVideo').addEventListener('click', () => {
+	  	if (!winningLogic.processed) {
+	  		winningLogic.processed = true;
 	  		this.processResult();
 	  	}
-	  });*/
+	  });
 
 		/* email registration */
 	  var form = document.getElementById('regForm');
@@ -242,12 +233,21 @@ var app = {
         spinner.style.display = 'none';
         if (response.data.status == true) {
         	this.formSections.toPage('doneSec');
-        	var emailContent = '<head><meta charset="utf-8"></head>ご登録ありがとうございました。下記にあるリンクをクリックしてください。その後キャンペーンへの参加をお願いします<br><br><a href="https://couponcampaign.ienomistyle.com/サラダスムージー/?userId=' + email + '" target="_blank">https://couponcampaign.ienomistyle.com/サラダスムージー/?userId=' + email + '</a>';
+        	// var emailContent = '<head><meta charset="utf-8"></head>ご登録ありがとうございました。下記にあるリンクをクリックしてください。その後キャンペーンへの参加をお願いします<br><br><a href="https://couponcampaign.ienomistyle.com/ボディメンテドリンク/?userId=' + email + '" target="_blank">https://couponcampaign.ienomistyle.com/ボディメンテドリンク/?userId=' + email + '</a>';
+        	var emailContent = '<head><meta charset="utf-8"></head>ご登録ありがとうございました。下記にあるリンクをクリックしてください。その後キャンペーンへの参加をお願いします<br><br><a href="https://s3.amazonaws.com/rmarepo/o2o/ボディメンテドリンク/index.html?userId=' + email + '" target="_blank">https://s3.amazonaws.com/rmarepo/o2o/ボディメンテドリンク/index.html?userId=' + email + '</a>';
         	user.sendEmail(email, 'Ienomistyle クーポンキャンペーン', emailContent);
-        	// user.trackRegister();
+        	// user.trackRegister(email);
         }
         else if (response.data.message == 'user exist.') {
         	user.info = response.data.user;
+        	user.isWanderer = false;
+        	if (window.localStorage.getItem('bmAnswers')) { // for single user per browser
+						user.loadLocal();
+					}
+					else {
+						user.saveLocal(response.data.user.id, response.data.user.couponCode, response.data.user.state); 
+					}
+					user.source = this.params.source;
         	this.enableSaveAnswer();
         	this.continue();
 					modal.closeAll();
@@ -348,7 +348,7 @@ var app = {
 							this.continue();
 						}
 					  this.enableSaveAnswer();
-					  // user.trackRegister();
+					  // user.trackRegister(userId);
 	    		}).catch((err) => {
 	    			user.isWanderer = true;
 	    			console.log(err);
@@ -363,11 +363,11 @@ var app = {
     	else { // user is registered
     		user.isWanderer = false;
 				user.info = response.data.user;
-				if (window.localStorage.getItem('localAnswers')) { // for single user per browser
+				if (window.localStorage.getItem('bmAnswers')) { // for single user per browser
 					user.loadLocal();
 				}
 				else {
-					user.saveLocal(userId, response.data.user.couponLink, response.data.user.state); 
+					user.saveLocal(userId, response.data.user.couponCode, response.data.user.state); 
 				}
 				user.source = this.params.source;
 				if (isTwitter) {
@@ -409,10 +409,10 @@ var app = {
 			  	}
 			  	// localAnswers[user.info.id] = qArray; // for multiple user per browser
 			  	// localStorage.setItem('localAnswers', JSON.stringify(localAnswers)); // for multiple user per browser
-			  	localStorage.setItem('localAnswers', JSON.stringify(qArray)); // for single user per browser
+			  	localStorage.setItem('bmAnswers', JSON.stringify(qArray)); // for single user per browser
 	  		}
-	  		// var qNo = parseInt(e.target.dataset.question);
-	  		// user.trackAnswer(this.params.userId, qNo, this.q[qNo].selectedAnswer);
+	  		var qNo = parseInt(e.target.dataset.question);
+	  		// user.trackAnswer(user.info.id, qNo, this.q[qNo].selectedAnswer);
 			  // user.saveAnswer(user.info.id, qArray);
 	  	})
 	 }
@@ -421,60 +421,170 @@ var app = {
 		/* ==== Set Questions ==== */
 	  this.q[1] = new singleAnswerQuestion({
 	  	wrapper: document.getElementById('q1'),
-	  	question: '<span class="red">QUESTION 1</span><br>スムージーを良く飲みますか？',
+	  	question: '<span class="red">QUESTION 1</span><br>属性・職業について教えてください。',
 	  	answers: [{
-	    	value: '飲んだことがある。',
-	    	text: '飲んだことがある。',
+	    	value: '中学生',
+	    	text: '中学生',
 	    }, {
-	    	value: '飲んだことはないが、飲んでみたい。',
-	    	text: '飲んだことはないが、飲んでみたい。'
+	    	value: '高校生',
+	    	text: '高校生'
 	    }, {
-	    	value: '飲んだことがない。',
-	    	text: '飲んだことがない。'
+	    	value: '予備校生',
+	    	text: '予備校生'
+	    }, {
+	    	value: '大学生',
+	    	text: '大学生'
+	    }, {
+	    	value: '大学院生',
+	    	text: '大学院生'
+	    }, {
+	    	value: '主婦（パート・アルバイト等兼業）',
+	    	text: '主婦（パート・アルバイト等兼業）'
+	    }, {
+	    	value: '主婦（専業）',
+	    	text: '主婦（専業）'
+	    }, {
+	    	value: '公務員',
+	    	text: '公務員'
+	    }, {
+	    	value: '会社員',
+	    	text: '会社員'
+	    }, {
+	    	value: '自営業',
+	    	text: '自営業'
+	    }, {
+	    	value: '自由業',
+	    	text: '自由業'
+	    }, {
+	    	value: '無職',
+	    	text: '無職'
+	    }, {
+	    	text: 'その他',
+	    	type: 'text'
 	    }],
 	    nextBtn: document.getElementById('toQ2')
 	  });
 	  
 	  this.q[2] = new singleAnswerQuestion({
 	  	wrapper: document.getElementById('q2'),
-	  	question: '<span class="red">QUESTION 2</span><br>スムージーに何を期待しますか？',
+	  	question: '<span class="red">QUESTION 2</span><br>同居の家族について教えてください。',
 	  	answers: [{
-	    	value: '美味しい味。',
-	    	text: '美味しい味。',
+	    	value: '同居の家族は居ない。（一人暮らし）',
+	    	text: '同居の家族は居ない。（一人暮らし）',
 	    }, {
-	    	value: '苦味。',
-	    	text: '苦味。'
+	    	value: '配偶者',
+	    	text: '配偶者'
 	    }, {
-	    	value: '整腸効果。',
-	    	text: '整腸効果。'
+	    	value: '子供（小学生以下）',
+	    	text: '子供（小学生以下）'
 	    }, {
-	    	value: 'ダイエット効果。（朝ごはんや昼ごはんの置き換え）',
-	    	text: 'ダイエット効果。（朝ごはんや昼ごはんの置き換え）'
+	    	value: '子供（中学生または高校生）',
+	    	text: '子供（中学生または高校生）'
 	    }, {
-	    	value: '安さ',
-	    	text: '安さ'
+	    	value: '子供（大学生以上）',
+	    	text: '子供（大学生以上）'
+	    }, {
+	    	value: '両親',
+	    	text: '両親'
+	    }, {
+	    	value: '兄弟姉妹',
+	    	text: '兄弟姉妹'
+	    }, {
+	    	value: '祖父母',
+	    	text: '祖父母'
+	    }, {
+	    	text: 'その他',
+	    	type: 'text'
 	    }],
 	    nextBtn: document.getElementById('toQ3')
 	  });
 
 	  this.q[3] = new singleAnswerQuestion({
 	  	wrapper: document.getElementById('q3'),
-	  	question: '<span class="red">QUESTION 3</span><br>いつもどこで買い物をしますか？',
+	  	question: '<span class="red">QUESTION 3</span><br>秋冬の風邪・インフルエンザ対策について<br>意識的に行っていることを教えてください。',
 	  	answers: [{
-	    	value: 'ローソン',
-	    	text: 'ローソン',
+	    	value: 'うがいをする',
+	    	text: 'うがいをする',
 	    }, {
-	    	value: 'セブン・イレブン',
-	    	text: 'セブン・イレブン	'
+	    	value: '手洗いをする',
+	    	text: '手洗いをする'
 	    }, {
-	    	value: 'ファミリーマート',
-	    	text: 'ファミリーマート'
+	    	value: 'マスクの着用',
+	    	text: 'マスクの着用'
 	    }, {
-	    	value: 'ドラックストア',
-	    	text: 'ドラックストア'
+	    	value: '加湿器を使う',
+	    	text: '加湿器を使う'
 	    }, {
-	    	value: 'その他',
-	    	text: 'その他'
+	    	value: 'インフルエンザ予防接種を受ける',
+	    	text: 'インフルエンザ予防接種を受ける'
+	    }, {
+	    	value: '乳酸菌飲料を飲む',
+	    	text: '乳酸菌飲料を飲む'
+	    }, {
+	    	text: 'その他',
+	    	type: 'text'
+	    }],
+	    nextBtn: document.getElementById('toQ4')
+	  });
+	  
+	  this.q[4] = new singleAnswerQuestion({
+	  	wrapper: document.getElementById('q4'),
+	  	question: '<span class="red">QUESTION 4</span><br>コンビニに行く頻度を教えてください。',
+	  	answers: [{
+	    	value: '毎日',
+	    	text: '毎日',
+	    }, {
+	    	value: '週4〜5回',
+	    	text: '週4〜5回'
+	    }, {
+	    	value: '週2〜3回',
+	    	text: '週2〜3回'
+	    }, {
+	    	value: '週1回',
+	    	text: '週1回'
+	    }, {
+	    	value: '月2〜3回',
+	    	text: '月2〜3回'
+	    }, {
+	    	value: '月1回',
+	    	text: '月1回'
+	    }, {
+	    	value: '月1回未満',
+	    	text: '月1回未満'
+	    }, {
+	    	value: '殆ど行かない',
+	    	text: '殆ど行かない'
+	    }],
+	    nextBtn: document.getElementById('toQ5')
+	  });
+
+	  this.q[5] = new singleAnswerQuestion({
+	  	wrapper: document.getElementById('q5'),
+	  	question: '<span class="red">QUESTION 5</span><br>ペットボトル飲料を飲む頻度を教えてください。',
+	  	answers: [{
+	    	value: '毎日',
+	    	text: '毎日',
+	    }, {
+	    	value: '週4〜5回',
+	    	text: '週4〜5回'
+	    }, {
+	    	value: '週2〜3回',
+	    	text: '週2〜3回'
+	    }, {
+	    	value: '週1回',
+	    	text: '週1回'
+	    }, {
+	    	value: '月2〜3回',
+	    	text: '月2〜3回'
+	    }, {
+	    	value: '月1回',
+	    	text: '月1回'
+	    }, {
+	    	value: '月1回未満',
+	    	text: '月1回未満'
+	    }, {
+	    	value: '殆ど飲まない',
+	    	text: '殆ど飲まない'
 	    }],
 	    nextBtn: document.getElementById('toApply')
 	  });
@@ -485,7 +595,7 @@ var app = {
 		  user.isWanderer = true;
 		  var t = delay || 100;
 	    setTimeout(() => {
-	    	if (localStorage.getItem('localUser')) { // this browser already have user
+	    	if (localStorage.getItem('bmUser')) { // this browser already have user
 					user.isWanderer = false;
 					user.source = this.params.source;
 					user.loadLocal();
@@ -494,12 +604,13 @@ var app = {
 				}
 				else {
 			    // this.pages.toPage('regPage');
+			    // this.pages.toPage('page1');
 			    this.pages.toPage('termsPage1');
 			  }
 		  }, t);
 	  }
 	  else {
-			if (localStorage.getItem('localUser')) { // for single user per browser
+			if (localStorage.getItem('bmUser')) { // for single user per browser
 				user.loadLocal();
 				this.enableSaveAnswer();
 				this.continue();
@@ -536,7 +647,11 @@ var app = {
 	  miniSelect.init('miniSelect');
 
 	  /* User Info */
-	  var localUser = localStorage.getItem('localUser');
+	  if (this.params.userId) {
+	  	user.clearLocal();
+	  }
+
+	  var localUser = localStorage.getItem('bmUser');
 		if (localUser) {
 		  user.get(localUser).then((response) => {
 				console.log(response);
@@ -566,15 +681,17 @@ var app = {
         height: vidHeight.toString(),
         width: vidWidth.toString(),
         playerVars: {'rel': 0,'showinfo': 0, 'controls': 0, 'playsinline': 1},
-        videoId: 'Hml0OM70H7E',
+        videoId: 'mWzzKVZ15LE',
         events: {
           'onStateChange': (event) => {
             if (event.data == YT.PlayerState.ENDED) {
-            	if (!processed) {
-	            	processed = true;
-	            	this.processResult();
-								this.pages.toPage('resultPage');
-							}
+            	console.log(winningLogic.processed);
+            	if (!winningLogic.processed) {
+					this.initResult('lose');
+				}
+				else {
+					this.pages.toPage('resultPage');
+				}
             }
           }
         }
@@ -588,22 +705,8 @@ document.addEventListener('DOMContentLoaded', function() {
   modal.init();
   window.q = app.q;
   window.params = app.params;
-    var uQuery = JSON.stringify({
-        id:"892241160915238912"
-      });
-
-       // axios.post('https://api.mobileads.com/mgd/upd?col=testCoupons&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
-      // axios.delete('https://api.mobileads.com/mgd/dlt?col=testCol')
-      // axios.delete('https://api.mobileads.com/mgd/dltOne?col=testCol&qobj=' + encodeURIComponent(uQuery))
-      axios.get('https://api.mobileads.com/mgd/q?col=testCol')
-      .then((resp) => {
-      	console.log(resp)
-      }).catch((e) => {
-      	console.log(e);
-      })
 });
 
 export {
-	user,
-	coupon,
+	user
 }

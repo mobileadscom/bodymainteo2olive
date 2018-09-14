@@ -110,7 +110,7 @@
   display: none;
 }
 
-#regButtons button, #submitBtn, #termsPage1 button {
+#regButtons button, #submitBtn, #termsPageFM button, #termsPageCK button {
   background-color: #00bd4f;
   border: none;
   color: white;
@@ -122,7 +122,7 @@
   margin-bottom: 5px;
 }
 
-#regButtons button:hover, #submitBtn:hover, #termsPage1 button:hover {
+#regButtons button:hover, #submitBtn:hover, #termsPageFM button:hover, #termsPageCK button:hover {
   cursor: pointer;
   background-color: #00984f;
 }
