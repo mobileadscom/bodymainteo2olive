@@ -338,9 +338,8 @@ var app = {
 					  // user.trackRegister(userId);
 		    		}).catch((err) => {
 		    			user.isWanderer = true;
-		    			alert('error page');
 		    			console.log(err);
-		    			// this.pages.toPage('termsPageFM');
+		    			this.pages.toPage('errorPage');
 		    		});
 		    	}
 		    	else {
@@ -351,7 +350,7 @@ var app = {
 		    			this.pages.toPage('termsPageCK');
 		    		}
 		    		else {
-		    			alert('no source')
+		    			this.pages.toPage('errorPage');
 		    		}
 		    		
 		    		this.enableSaveAnswer();
@@ -386,7 +385,7 @@ var app = {
     			this.pages.toPage('termsPageCK');
     		}
     		else {
-    			alert('no source')
+    			this.pages.toPage('errorPage');
     		}
 	    });
 	},
@@ -572,14 +571,14 @@ var app = {
 						}
 						else {
 							user.isWanderer = true;
-							alert('invalid source');
+							this.pages.toPage('errorPage');
 						}
 					}
 				}
 			}
 			else {
 				user.isWanderer = true;
-				alert('no source!');
+				this.pages.toPage('errorPage');
 			}
 		}
 	},
