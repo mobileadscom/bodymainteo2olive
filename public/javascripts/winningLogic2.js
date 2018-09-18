@@ -55,7 +55,7 @@ var winningLogic = {
       var actualResult = 'lose' // result to be stored to db via /mark_user, also shown in result page
       var couponInfo = {};
 
-      if (this.eligibility. length < 2) { // must answer q1 AND q2 correctly
+      if (this.eligibility.length < 2) { // must answer q1 AND q2 correctly
         winPrio = losePrio
       }
 

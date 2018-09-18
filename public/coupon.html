@@ -17,11 +17,14 @@
         <div id="couponNumber">
           123456
         </div>
+        <div id="CircleKIndicator" style="display: none;margin-top: 10px;">サークルK・サンクス</div>
         <div id="couponInfo">
-          <span style="color: #19AE48;font-weight: 600;">有効期限：</span>
+          <span style="color: #19AE48;font-weight: 600;">クーポン発券期限：</span>
+          <br>2018年10月22日まで
+          <br><br><span style="color: #19AE48;font-weight: 600;">商品引換期限：</span>
           <br>2018年10月23日まで
           <br><br><span style="color: #19AE48;font-weight: 600;">交換場所：</span>
-          <br>全国のファミリーマート店舗
+          <br><span id="excLoc">全国のファミリーマート店舗</span>
           <br><br><span style="color: #19AE48;font-weight: 600;">Famiポート操作手順：</span>
           <br>※店頭に商品がない場合がございます。ご来店される店舗に商品があることをご確認の上、クーポン券を発券してください。
           <br><br>以下の手順でファミリーマート店頭のFamiポートで、クーポン券を発券してください。
@@ -107,12 +110,17 @@ function trackCouponView(couponCode, userId) {
   }*/
 }
 
-function showCouponCode(couponCode) {
+function showCouponCode(couponCode, source) {
   document.getElementById('couponNumber').innerHTML = couponCode;
+  if (source == 'CircleK') {
+    document.getElementById('excLoc').innerHTML = '全国のサークルK・サンクス店舗';
+    document.getElementById('CircleKIndicator').style.display = 'block';
+    document.getElementById('couponInfo').style.marginTop = '20px;'
+  }
   document.getElementById('couponPage').style.display = 'block';
 }
 
-function renderFromAPI(userId) {
+function renderFromAPI(userId, source) {
   if (window.XMLHttpRequest) {
       xmlhttp = new XMLHttpRequest();
   } else {
@@ -124,7 +132,7 @@ function renderFromAPI(userId) {
       console.log(response);
       try {
         if (response.user.couponCode) {
-          showCouponCode(response.user.couponCode);
+          showCouponCode(response.user.couponCode, response.user.source);
           // trackCouponView(response.user.couponCode, params.userId);
         }
         else {
@@ -146,35 +154,60 @@ function renderFromAPI(userId) {
     }
   };
 
-  xmlhttp.open("GET", 'https://api.mobileads.com/coupons/bm/user_info?id=' + params.userId);
+  xmlhttp.open("GET", 'https://api.mobileads.com/coupons/o2o/user_info?id=' + params.userId + '&source=' + source);
   xmlhttp.send();
+}
+
+function getLocal() {
+  if (window.localStorage.getItem('BodyMainte')) {
+    try {
+      var userObj = JSON.parse(window.localStorage.getItem('BodyMainte'));
+      if (userObj.id) {
+        return {
+          userObj: userObj,
+          status: true
+        }
+      }
+      else {
+        console.error('no id found in localStorage');
+        return {
+          status: false
+        }
+      }
+    }
+    catch(err) {
+      console.error(err);
+      return {
+        status: false
+      }
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   var params = getParams();
   window.params = params;
-  if (params.userId) {
+  if (params.userId && params.source) {
     try {
-      if (localStorage.getItem('bmCoupon')) {
-        var couponCode = localStorage.getItem('bmCoupon');
-        var user = localStorage.getItem('bmUser');
-        if (user == params.userId) {
+      var localObj = getLocal();
+      if (localObj.status == true) {
+        if (localObj.userObj.id == params.userId && localObj.userObj.source == params.source) {
           console.log('1');
-          showCouponCode(couponCode);
+          showCouponCode(localObj.userObj.couponCode, localObj.userObj.source);
           // trackCouponView(couponCode, params.userId);
         }
         else {
           console.log('2');
-          renderFromAPI(params.userId);
+          renderFromAPI(params.userId, params.source);
         }
       }
       else {
         console.log('3');
-        renderFromAPI(params.userId);
+        renderFromAPI(params.userId, params.source);
       }
     } catch(err) {
       console.log('4');
-      renderFromAPI(params.userId);
+      renderFromAPI(params.userId, params.source);
     }
   }
   else {

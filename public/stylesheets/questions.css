@@ -97,8 +97,10 @@
 .m-answer.selected:before {
 /*  border-color: #536D79;
   background-color: #536D79;*/
-  border-color: #3872da;
-  background-color: #3872da;
+  /*border-color: #3872da;
+  background-color: #3872da;*/
+  border-color: #4F5640;
+  background-color: #4F5640;
 }
 
 .answer.selected .rad, .m-answer.selected .checkmark {

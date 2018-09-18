@@ -37,9 +37,9 @@ var app = {
 		  } 
 		  return query_string;
 	},
-	generateCouponLink(userId) {
+	generateCouponLink(userId, source) {
 		// return 'https://couponcampaign.ienomistyle.com/ボディメンテドリンク/coupon.html?userId=' + userId; 
-		return 'https://s3.amazonaws.com/rmarepo/o2o/ボディメンテドリンク/coupon.html?userId=' + userId;
+		return 'https://s3.amazonaws.com/rmarepo/o2o/ボディメンテドリンク/coupon.html?userId=' + userId + '&source=' + source;
 	},
 	initResult(state, couponLink) {
 		if (state == 'win') {
@@ -52,14 +52,21 @@ var app = {
 				document.getElementById('couponInfo').style.display = 'none';
 			}
 			else {
-				document.getElementById('resultInstruction').innerHTML = "クーポンを受け取って、ファミリーマートで引き換えてください";
+				if (this.params.source == 'CircleK') {
+					document.getElementById('resultInstruction').innerHTML = "クーポンを受け取って、サークルK・サンクスで引き換えてください";
+					document.getElementById('excLoc').innerHTML = '全国のサークルK・サンクス店舗';
+				}
+				else {
+					document.getElementById('resultInstruction').innerHTML = "クーポンを受け取って、ファミリーマートで引き換えてください";
+					document.getElementById('excLoc').innerHTML = '全国のファミリーマート店舗';
+				}
 			}
 
 			if (couponLink) {
 				document.getElementById('couponLoader').style.display = 'none';
 				document.getElementById('couponLink').href = couponLink;
 				document.getElementById('couponLink').setAttribute('target', '_blank');
-				 document.getElementById('getCoupon').innerText = 'クーポンを受け取る';
+				document.getElementById('getCoupon').innerText = 'クーポンを受け取る';
 			}
 		}
 		else {
@@ -77,13 +84,19 @@ var app = {
 			console.log(resultProperties);
 			var actualResult = resultProperties.actualResult;
 			var group = resultProperties.group;
+			if (actualResult == 'win') {
+				if (this.params.source == 'CircleK') {
+					group = ['B'];
+				}
+			}
 			if (!user.isWanderer) {
-				user.mark(user.info.id, actualResult, group).then((response) => {
+				user.mark(user.info.id, actualResult, group, this.params.source).then((response) => {
 					winningLogic.processed = true;
 					console.log(response)
 					if (response.data.couponCode) {
-						var couponLink = this.generateCouponLink(user.info.id);
-						user.saveLocal(user.info.id, response.data.couponCode, 'win'); //rmb allow this back
+						var couponLink = this.generateCouponLink(user.info.id, this.params.source);
+						user.saveLocal(user.info.id, response.data.couponCode, 'win', this.params.source); //rmb allow this back
+						this.localObj = user.getLocal();
 						this.initResult('win', couponLink);
 						var message = 'サラダスムージークーポンが当たりました! ' + encodeURI(couponLink);
 						if (user.info.id.indexOf('@') > -1) { // login via email
@@ -93,16 +106,18 @@ var app = {
 						else {
 							user.messageTwitter(message);
 						}
-						// user.passResult(user.info.id, flag, user.source, couponInfo.couponLink);
+						// user.passResult(user.info.id, flag, user.info.source, couponInfo.couponLink);
 					}
 					else {
-						user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
+						user.saveLocal(user.info.id, '', 'lose', this.params.source); //rmb allow this back
+						this.localObj = user.getLocal();
 						this.initResult('lose');
 					}
 				}).catch((error) => {
 					console.log(error);
 					winningLogic.processed = true;
-					user.saveLocal(user.info.id, '', 'lose'); //rmb allow this back
+					user.saveLocal(user.info.id, '', 'lose', this.params.source); //rmb allow this back
+					this.localObj = user.getLocal();
 		  			this.initResult('lose');
 				});
 
@@ -123,37 +138,8 @@ var app = {
 		});
 	},
 	continue: function() {
-		var answerJson = '{}';
-		if (localStorage.getItem('bmAnswers')) {
-			answerJson = localStorage.getItem('bmAnswers');
-		}
-		var noQuestionAnswered = 0;
-		// for multiple user per browser
-		/*var userAnswers = [];
-		var localAnswers = JSON.parse(answerJson);
-		if (localAnswers) {
-			if (localAnswers.hasOwnProperty(user.info.id)) {
-				userAnswers = localAnswers[user.info.id];
-				noQuestionAnswered = userAnswers.length - 1;
-			}
-		}
-
-		if (!userAnswers) {
-			userAnswers = JSON.parse(user.info.Answers);
-			noQuestionAnswered = user.info.noQuestionAnswered;
-		}*/
-		// for multiple user per browser END
-
-		// for single user per browser
-		var userAnswers = JSON.parse(answerJson);
-		if (userAnswers) {
-			noQuestionAnswered = userAnswers.length - 1;
-		}
-		else {
-			userAnswers = JSON.parse(user.info.Answers);
-			noQuestionAnswered = user.info.noQuestionAnswered;
-		}
-		// for single user per browser END
+		var userAnswers = this.localObj.status == true ? this.localObj.userObj.answers : [];
+		var noQuestionAnswered = userAnswers.length - 1;
 
 		/*apply answer to answered question */
 		for (var w = 1; w < this.q.length; w++) {
@@ -164,7 +150,7 @@ var app = {
 
 		if (user.info.state == 'win') {
 			console.log(user.info);
-			this.initResult('win', this.generateCouponLink(user.info.id));
+			this.initResult('win', this.generateCouponLink(user.info.id, this.params.source));
 			this.pages.toPage('resultPage');
 		}
 		else if (user.info.state == 'lose') {
@@ -219,7 +205,7 @@ var app = {
 	  });
 
 		/* email registration */
-	  var form = document.getElementById('regForm');
+	  /*var form = document.getElementById('regForm');
 	  form.onsubmit = (event) => {
 	    var spinner = document.getElementById('formWorking');
 	    var donePage = document.getElementById('doneSec');
@@ -228,7 +214,7 @@ var app = {
 	    spinner.style.display = 'block';
       event.preventDefault();
       var email = document.getElementById('emailInput').value;
-			user.register(email).then((response) => {
+			user.register(email, this.params.source).then((response) => {
 				console.log(response);
         spinner.style.display = 'none';
         if (response.data.status == true) {
@@ -247,7 +233,7 @@ var app = {
 					else {
 						user.saveLocal(response.data.user.id, response.data.user.couponCode, response.data.user.state); 
 					}
-					user.source = this.params.source;
+					user.info.source = this.params.source;
         	this.enableSaveAnswer();
         	this.continue();
 					modal.closeAll();
@@ -258,7 +244,7 @@ var app = {
 				form.style.display = 'block';
         spinner.style.display = 'none';
 			});
-    };
+    };*/
 
     /* twitter registration / login */
     var twitReg = document.getElementById('regTwitter');
@@ -331,16 +317,17 @@ var app = {
 	},
 	initUser: function(userId, autoRegister, isTwitter) {
 		/* check if user is registered, if no, then register user, if yes, continue on where the user left off */
-		user.get(userId).then((response) => {
+		user.get(userId, this.params.source).then((response) => {
 			console.log(response);
 	    	if (response.data.status == false) { // user is not registered
 		    	if (autoRegister) {
-		    		user.register(userId).then((res) => { // auto register user
+		    		user.register(userId, this.params.source).then((res) => { // auto register user
 						console.log(res);
 						user.isWanderer = false;
 						user.info.id = userId;
-						user.source = this.params.source;
+						user.info.source = this.params.source;
 						user.saveLocal(userId, '', '-', this.params.source); // for single user per browser
+						this.localObj = user.getLocal();
 						if (isTwitter) {
 							this.checkTwitter();
 						}
@@ -357,20 +344,30 @@ var app = {
 		    		});
 		    	}
 		    	else {
-		    		this.pages.toPage('termsPageFM');
+		    		if (this.params.source == 'FamilyMart') {
+		    			this.pages.toPage('termsPageFM');
+		    		}
+		    		else if (this.params.source == 'CircleK') {
+		    			this.pages.toPage('termsPageCK');
+		    		}
+		    		else {
+		    			alert('no source')
+		    		}
+		    		
 		    		this.enableSaveAnswer();
 		    	}
 	    	}
 	    	else { // user is registered
 	    		user.isWanderer = false;
 				user.info = response.data.user;
-				if (window.localStorage.getItem('bmAnswers')) { // for single user per browser
-					user.loadLocal();
-				}
-				else {
-					user.saveLocal(userId, response.data.user.couponCode, response.data.user.state); 
-				}
-				user.source = this.params.source;
+				user.info.source = response.data.user.source;
+				// if (this.localObj.status == true) { // this browser already have user
+				// 	user.loadLocal();
+				// }
+				// else {
+					user.saveLocal(userId, response.data.user.couponCode, response.data.user.state, response.data.user.source);
+					this.localObj = user.getLocal();
+				// }
 				if (isTwitter) {
 					this.checkTwitter();
 				}
@@ -382,35 +379,30 @@ var app = {
 	    }).catch((error) => {
 	    	user.isWanderer = true;
 			console.log(error);
-			this.pages.toPage('termsPageFM');
+			if (this.params.source == 'FamilyMart') {
+    			this.pages.toPage('termsPageFM');
+    		}
+    		else if (this.params.source == 'CircleK') {
+    			this.pages.toPage('termsPageCK');
+    		}
+    		else {
+    			alert('no source')
+    		}
 	    });
 	},
 	enableSaveAnswer: function() {
     /* Auto save answer for every questions*/
 	  var saveBtns = document.getElementsByClassName('saveQuestion');
-	  console.log('enableSaveAnswer');
 	  for (var s = 0; s < saveBtns.length; s++ ) {
 	  	saveBtns[s].addEventListener('click', (e) => {
 	  		if (typeof(Storage) !== "undefined") {
-	  			// for multiple user per browser
-					/*var answerJson = '{}';
-	  			if (localStorage.getItem('localAnswers')) {
-	  				answerJson = localStorage.getItem('localAnswers');
-	  			}
-	  			var localAnswers = JSON.parse(answerJson); 
-	  			if (!localAnswers) {
-	  				localAnswers = {}; 
-		  		}*/
-		  		// for multiple user per browser END
 			  	var qArray = [];
 			  	for (var n = 1; n < this.q.length; n++) {
 						if (this.q[n].selectedAnswer) {
 							qArray[n] = this.q[n].selectedAnswer;
 						}
 			  	}
-			  	// localAnswers[user.info.id] = qArray; // for multiple user per browser
-			  	// localStorage.setItem('localAnswers', JSON.stringify(localAnswers)); // for multiple user per browser
-			  	localStorage.setItem('bmAnswers', JSON.stringify(qArray)); // for single user per browser
+			  	user.saveLocalAnswers(qArray);
 	  		}
 	  		var qNo = parseInt(e.target.dataset.question);
 	  		// user.trackAnswer(user.info.id, qNo, this.q[qNo].selectedAnswer);
@@ -466,7 +458,7 @@ var app = {
 	    nextBtn: document.getElementById('toQ2')
 	  });
 	  
-	  this.q[2] = new singleAnswerQuestion({
+	  this.q[2] = new multipleAnswerQuestion({
 	  	wrapper: document.getElementById('q2'),
 	  	question: '<span class="red">QUESTION 2</span><br>同居の家族について教えてください。',
 	  	answers: [{
@@ -500,7 +492,7 @@ var app = {
 	    nextBtn: document.getElementById('toQ3')
 	  });
 
-	  this.q[3] = new singleAnswerQuestion({
+	  this.q[3] = new multipleAnswerQuestion({
 	  	wrapper: document.getElementById('q3'),
 	  	question: '<span class="red">QUESTION 3</span><br>秋冬の風邪・インフルエンザ対策について<br>意識的に行っていることを教えてください。',
 	  	answers: [{
@@ -530,69 +522,33 @@ var app = {
 	  
 	  this.q[4] = new singleAnswerQuestion({
 	  	wrapper: document.getElementById('q4'),
-	  	question: '<span class="red">QUESTION 4</span><br>コンビニに行く頻度を教えてください。',
+	  	question: '<span class="red">QUESTION 4</span><br>体調管理に関する新しい食品や飲料に興味はありますか？',
 	  	answers: [{
-	    	value: '毎日',
-	    	text: '毎日',
+	    	value: 'Yes',
+	    	text: 'Yes',
 	    }, {
-	    	value: '週4〜5回',
-	    	text: '週4〜5回'
-	    }, {
-	    	value: '週2〜3回',
-	    	text: '週2〜3回'
-	    }, {
-	    	value: '週1回',
-	    	text: '週1回'
-	    }, {
-	    	value: '月2〜3回',
-	    	text: '月2〜3回'
-	    }, {
-	    	value: '月1回',
-	    	text: '月1回'
-	    }, {
-	    	value: '月1回未満',
-	    	text: '月1回未満'
-	    }, {
-	    	value: '殆ど行かない',
-	    	text: '殆ど行かない'
+	    	value: 'No',
+	    	text: 'No'
 	    }],
 	    nextBtn: document.getElementById('toQ5')
 	  });
 
 	  this.q[5] = new singleAnswerQuestion({
 	  	wrapper: document.getElementById('q5'),
-	  	question: '<span class="red">QUESTION 5</span><br>ペットボトル飲料を飲む頻度を教えてください。',
+	  	question: '<span class="red">QUESTION 5</span><br>10月9日に新発売のボディメンテドリンクは「水分・電解質+ カラダを守る乳酸菌B240」で設計された、これまでにない「飲んでカラダをバリアする。」全く新しい飲料です。ご存知でしたか？',
 	  	answers: [{
-	    	value: '毎日',
-	    	text: '毎日',
+	    	value: 'Yes',
+	    	text: 'Yes',
 	    }, {
-	    	value: '週4〜5回',
-	    	text: '週4〜5回'
-	    }, {
-	    	value: '週2〜3回',
-	    	text: '週2〜3回'
-	    }, {
-	    	value: '週1回',
-	    	text: '週1回'
-	    }, {
-	    	value: '月2〜3回',
-	    	text: '月2〜3回'
-	    }, {
-	    	value: '月1回',
-	    	text: '月1回'
-	    }, {
-	    	value: '月1回未満',
-	    	text: '月1回未満'
-	    }, {
-	    	value: '殆ど飲まない',
-	    	text: '殆ど飲まない'
+	    	value: 'No',
+	    	text: 'No'
 	    }],
 	    nextBtn: document.getElementById('toApply')
 	  });
 	  /* ==== Questions End ==== */
 	},
 	start: function(delay) {
-		if (this.localObj.status == true) { // this browser already have user
+		if (this.localObj.status == true && this.localObj.userObj.source == this.params.source) { // this browser already have user
 			user.isWanderer = false;
 			user.loadLocal();
 			this.enableSaveAnswer();
@@ -604,15 +560,20 @@ var app = {
 					this.initUser(this.params.userId, false);
 				}
 				else {
-					if (this.params.source == 'FamilyMart') {
-						this.pages.toPage('termsPageFM');
-					}
-					else if (this.params.source == 'CircleK') {
-						this.pages.toPage('termsPageCK');
+					if (this.localObj.status == true) {
+						this.initUser(this.localObj.userObj.id, false);
 					}
 					else {
-						user.isWanderer = true;
-						alert('invalid source');
+						if (this.params.source == 'FamilyMart') {
+							this.pages.toPage('termsPageFM');
+						}
+						else if (this.params.source == 'CircleK') {
+							this.pages.toPage('termsPageCK');
+						}
+						else {
+							user.isWanderer = true;
+							alert('invalid source');
+						}
 					}
 				}
 			}
@@ -621,36 +582,6 @@ var app = {
 				alert('no source!');
 			}
 		}
-		
-		/*if (!this.params.userId || !this.params.source) {
-			user.isWanderer = true;
-			var t = delay || 100;
-		    setTimeout(() => {
-		    	if (localStorage.getItem('bmUser')) { // this browser already have user
-						user.isWanderer = false;
-						user.source = this.params.source;
-						user.loadLocal();
-						this.enableSaveAnswer();
-						this.continue();
-					}
-					else {
-						alert('no source!')
-					    // this.pages.toPage('regPage');
-					    // this.pages.toPage('page1');
-					    this.pages.toPage('termsPageFM');
-					}
-			}, t);
-		}
-		else {
-			if (localStorage.getItem('bmUser')) { // for single user per browser
-				user.loadLocal();
-				this.enableSaveAnswer();
-				this.continue();
-			}
-			else {
-				this.initUser(this.params.userId, false);
-			}
-		}*/
 	},
 	init: function() {
 		var vidWidth = document.getElementById('vid').clientWidth;
@@ -667,11 +598,11 @@ var app = {
 		});
 
 		/* init registration form sections */
-		this.formSections = new miniPages({
+		/*this.formSections = new miniPages({
 		  	pageWrapperClass: document.getElementById('formSecWrapper'),
 		  	pageClass: 'sec',
 		  	initialPage: document.getElementById('regSec')
-		});
+		});*/
     
 	    this.setQuestions();
 	    this.events();
@@ -682,16 +613,22 @@ var app = {
 		/* User Info */
 		if (this.params.userId) {
 		  	user.clearLocal();
+		  	this.localObj = {
+		  		status: false
+		  	}
 		}
 		
 		if (this.localObj.status == true) {
-			user.get(this.localObj.userObj.id).then((response) => {
+			user.get(this.localObj.userObj.id, this.params.source).then((response) => {
 				console.log(response);
-		    	if (response.data.status == false && response.data.message != 'error') { // user is not registered
-			    	user.clearLocal(); // db has been cleared, clear local storage also
-		    	}
+		    if (response.data.status == false && response.data.message != 'error') { // user is not registered
+			    user.clearLocal(); // db has been cleared, clear local storage also
+			    this.localObj = {
+			  		status: false
+			  	}
+		    }
 				this.start();
-		    });
+			});
 		}
 		else {
 			this.start(1000);
