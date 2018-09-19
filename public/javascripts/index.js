@@ -195,14 +195,6 @@ var app = {
 	    	document.getElementById('startSurvey').disabled = true;
 	    }
 	  }
-	  
-	  /* Finished Answering Questions, process result */
-	  document.getElementById('toVideo').addEventListener('click', () => {
-	  	if (!winningLogic.processed) {
-	  		winningLogic.processed = true;
-	  		this.processResult();
-	  	}
-	  });
 
 		/* email registration */
 	  /*var form = document.getElementById('regForm');
@@ -294,9 +286,9 @@ var app = {
     }
 
     document.getElementById('toVideo').addEventListener('click', () => {
-			setTimeout(() => {
-				this.player.playVideo();
-			}, 300);
+		setTimeout(() => {
+			this.player.playVideo();
+		}, 300);
     });
 	  /* ==== Event Listeners End ==== */
 	},
@@ -650,13 +642,24 @@ var app = {
 		        events: {
 		            'onStateChange': (event) => {
 			            if (event.data == YT.PlayerState.ENDED) {
-			            	console.log(winningLogic.processed);
-			            	if (!winningLogic.processed) {
-								this.initResult('lose');
-							}
-							else {
-								this.pages.toPage('resultPage');
-							}
+							this.pages.toPage('resultPage');
+			            }
+			            else if (event.data == YT.PlayerState.PLAYING) {
+			            	var playtimer = setInterval(() => {
+			            		if (this.player.getPlayerState() != 1) {
+			            			console.log('videoEnded!');
+			            			clearInterval(playtimer);
+			            		}
+			            		else {
+			            			if (this.player.getCurrentTime() / this.player.getDuration() > 0.8) { //80% played
+									 	  if (!winningLogic.processed) {
+									  		winningLogic.processed = true;
+									  		this.processResult();
+									  	}
+			            			}
+			            		}
+			            	}, 1000);
+			            	
 			            }
 		            }
 		        }
