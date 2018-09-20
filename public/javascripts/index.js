@@ -451,7 +451,7 @@ var app = {
 	  
 	  this.q[2] = new multipleAnswerQuestion({
 	  	wrapper: document.getElementById('q2'),
-	  	question: '<span class="red">QUESTION 2</span><br>同居の家族について教えてください。',
+	  	question: '<span class="red">QUESTION 2</span><br>同居の家族について教えてください。<br><span style="font-size:14px;color:#222;">複数選択可能</span>',
 	  	answers: [{
 	    	value: '同居の家族は居ない。（一人暮らし）',
 	    	text: '同居の家族は居ない。（一人暮らし）',
@@ -485,7 +485,7 @@ var app = {
 
 	  this.q[3] = new multipleAnswerQuestion({
 	  	wrapper: document.getElementById('q3'),
-	  	question: '<span class="red">QUESTION 3</span><br>秋冬の風邪・インフルエンザ対策について<br>意識的に行っていることを教えてください。',
+	  	question: '<span class="red">QUESTION 3</span><br>秋冬の風邪・インフルエンザ対策について<br>意識的に行っていることを教えてください。<br><span style="font-size:14px;color:#222;">複数選択可能</span>',
 	  	answers: [{
 	    	value: 'うがいをする',
 	    	text: 'うがいをする',
