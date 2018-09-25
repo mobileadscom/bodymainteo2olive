@@ -154,9 +154,11 @@ function renderFromAPI(userId, source) {
         var localObj = getLocal();
         if (localObj.status == true) {
           if (localObj.userObj.id == params.userId && localObj.userObj.source == params.source) {
+            console.log('render from local');
             showCouponCode(localObj.userObj.couponCode, localObj.userObj.source);
             // trackCouponView(couponCode, params.userId);
           }
+        }
       } catch(err) {
         document.getElementById('surveyPage').style.display = 'block';
       }
