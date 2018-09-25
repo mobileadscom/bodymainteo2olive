@@ -150,7 +150,16 @@ function renderFromAPI(userId, source) {
       }
     }
     else if (this.readyState == 4 && this.status != 200) {
-      document.getElementById('surveyPage').style.display = 'block';
+      try {
+        var localObj = getLocal();
+        if (localObj.status == true) {
+          if (localObj.userObj.id == params.userId && localObj.userObj.source == params.source) {
+            showCouponCode(localObj.userObj.couponCode, localObj.userObj.source);
+            // trackCouponView(couponCode, params.userId);
+          }
+      } catch(err) {
+        document.getElementById('surveyPage').style.display = 'block';
+      }
     }
   };
 
