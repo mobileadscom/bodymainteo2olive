@@ -2,13 +2,18 @@ import axios from 'axios';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import firebaseConfig from './firebaseConfig';
+import Fingerprint2 from 'fingerprintjs2';
+
 firebase.initializeApp(firebaseConfig);
 
 var domain = 'https://www.mobileads.com';
-// var domain = 'http://localhost:8080';
-var userCollection = 'testCol';
-var couponCollection = 'testCoupons';
+var apiDomain = 'https://api.mobileads.com';
+
+var userCollection = 'BodyMainteUsers';
+var couponCollection = 'BodyMainteCoupons';
 var functionsDomain = 'https://us-central1-familymarto2o.cloudfunctions.net/twitter';
+
+var localStorageName = 'BodyMainte';
 
 var campaignId = 'ca8ca8c34a363fa07b2d38d007ca55c6';
 var adUserId = '4441';
@@ -19,119 +24,40 @@ var trackingUrl = generalUrl.replace('{{rmaId}}', rmaId).replace('{{campaignId}}
 
 var user = {
 	isWanderer: false,
-	source: '',
 	twitter: {
 		token: '',
 		secret: ''
 	},
 	info: {
-		Answers: '',
-		couponLink: '',
+		answers: [],
+		couponCode: '',
 		id: '',
 		noQuestionAnswered: 0,
-		state: '-'
+		state: '-',
+		source: '',
 	},
-	get: function(userId) {
+	fingerprint:'',
+	generateFingerPrint() {
+		new Fingerprint2().get((result, components) => {
+			this.fingerprint = result;
+	        return result;
+        });
+	},
+	get: function(userId, source) {
 		/* this is using the old mysql database. Not using Now */
-    /*return axios.get(domain + '/api/coupon/softbank/user_info', {
+    return axios.get(apiDomain + '/coupons/o2o/user_info', {
       params: {
-        id: userId
+        id: userId,
+        source: source
       }
-    });*/
-
-    /* mongoDB */
-    return new Promise(function(resolve, reject) {
-    	var userQuery = JSON.stringify({
-				id: userId
-			});
-			axios.get('https://api.mobileads.com/mgd/q?col=' + userCollection + '&qobj=' + encodeURIComponent(userQuery))
-			.then((response) => {
-				if (response.data.length > 0) { //user already exist
-					resolve({
-						data: {
-							message: "retrieved.",
-							user: response.data[0],
-							status: true
-						}
-					});
-				}
-				else {
-					resolve({
-						data: {
-							message: "not registered.",
-							status: false
-						}
-					});
-				}
-			}).catch((error) => {
-				console.error(error);
-				reject({
-					data: {
-						message: 'error',
-						status: false
-					}
-				});
-			});
     });
 	},
-	register: function(userId) {
-		/* this is using the old mysql database. Not using Now */
-		/*var regForm = new FormData();
-		regForm.append('id', userId);
-		return axios.post(domain + '/api/coupon/softbank/register', regForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });*/
+	register: function(userId, source) {
+		// var regForm = new FormData();
+		// regForm.append('id', userId);
+		// return axios.post(apiDomain + '/coupons/user_register', regForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 
-		/* mongoDB */
-		return new Promise(function(resolve, reject) {
-			var userQuery = JSON.stringify({
-				id: userId
-			});
-			axios.get('https://api.mobileads.com/mgd/q?col=' + userCollection + '&qobj=' + encodeURIComponent(userQuery))
-			.then((response) => {
-				if (response.data.length > 0) { //user already exist
-					resolve({
-						data: {
-							message: "user exist.",
-							user: response.data[0],
-							status: false
-						}
-					});
-				}
-				else {
-					var userJson = JSON.stringify({
-						id: userId,
-						couponLink: '',
-						Answers: '[]',
-						noQuestionAnswered: 0,
-						state: '-'
-					});
-					axios.post('https://api.mobileads.com/mgd/insOne?col=' + userCollection + '&obj=' + encodeURIComponent(userJson))
-					.then((resp) => {
-						resolve({
-							data: {
-								message: "registration success.",
-								status: true
-							}
-						});
-					}).catch((err) => {
-						console.error(err);
-						reject({
-							data: {
-								message: 'error',
-								status: false
-							}
-						});
-					});
-				}
-			}).catch((error) => {
-				console.error(error);
-				reject({
-					data: {
-						message: 'error',
-						status: false
-					}
-				});
-			});
-		});
+		return axios.post(apiDomain + '/coupons/o2o/user_register?id=' + userId + '&source=' + source + '&fingerprint=' + this.fingerprint);
 	},
 	trackRegister: function(userId) {
     // track as impression
@@ -159,7 +85,7 @@ var user = {
 	  return firebase.auth().signInWithPopup(provider);
 	},
 	isFollowingTwitter: function() {
-		return axios.post(functionsDomain + '/getUser', {
+		return axios.post(functionsDomain + '/checkFriendship', {
       token: this.twitter.token,
       tokenSecret: this.twitter.secret,
       id: this.info.id
@@ -213,18 +139,23 @@ var user = {
 			return axios.get(url);
 	  }
 	},
-	win: function(userId, group, source, couponInfo) {
+	mark: function(userId, state, groups, source) {
+		// var groupJSON = JSON.stringify(groups);
+		var groupJSON = groups[0];
+		return axios.post(apiDomain + '/coupons/o2o/mark_user?id=' + userId + '&state=' + state + '&groups=' + groupJSON + '&source=' + source);
+	},
+	win: function(userId, couponInfo) {
 		return new Promise(function(resolve, reject) {
 			// redeem coupon
 			var uQuery = JSON.stringify({
-				_id: couponInfo.couponId
+				_id: couponInfo._id
 			});
 			var updateCoupon = JSON.stringify({
 				redeemed: true,
 				owner: userId
 			});
 
-			axios.post('https://api.mobileads.com/mgd/updOne?col=' + couponCollection + '&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
+			axios.post('https://api.mobileads.com/mgd/updOne?col=FamilyMartCoupons&qobj=' + encodeURIComponent(uQuery) + '&uobj=' + encodeURIComponent(updateCoupon))
 			.then((resp) => {
 				if (resp.data.status == 'success') { //coupon redeemed, update user as winner
 					var userQuery = JSON.stringify({
@@ -233,15 +164,15 @@ var user = {
 
 					var updateState = JSON.stringify({
 						state: 'win',
-						couponLink: couponInfo.couponLink
+						couponCode: couponInfo.couponCode
 					});
 
-				    axios.post('https://api.mobileads.com/mgd/updOne?col=' + userCollection + '&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
+				    axios.post('https://api.mobileads.com/mgd/updOne?col=testCol2&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
 				    .then((res) => {
 						if (resp.data.status == 'success') {
 							resolve({
 								data: {
-									couponLink: couponInfo.couponLink,
+									couponCode: couponInfo.couponCode,
 									message: "marked.",
 									status:true
 								}
@@ -307,7 +238,7 @@ var user = {
 			state: 'lose',
 		});
 		return new Promise(function(resolve, reject) {
-			axios.post('https://api.mobileads.com/mgd/updOne?col=' + userCollection + '&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
+			axios.post('https://api.mobileads.com/mgd/updOne?col=testCol2&qobj=' + encodeURIComponent(userQuery) + '&uobj=' + encodeURIComponent(updateState))
 	    .then((response) => {
 				if (response.data.status == 'success') {
 					resolve({
@@ -352,23 +283,86 @@ var user = {
 		}
 		return axios.post(domain + '/api/coupon/softbank/api_call', psForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 	},
-	saveLocal: function(userId, couponLink, state) {
-		window.localStorage.setItem('localUser', userId);
-		window.localStorage.setItem('localCoupon', couponLink);
-		window.localStorage.setItem('localState', state);
+	saveLocal: function(userId, couponCode, state, source) {
+		var localObj = this.getLocal();
+		if (localObj.status == true) {
+			localObj.userObj.id = userId;
+			localObj.userObj.couponCode = couponCode;
+			localObj.userObj.state = state;
+			localObj.userObj.source = source;
+
+			window.localStorage.setItem(localStorageName, JSON.stringify(localObj.userObj));
+		}
+		else {
+			var userObj = {
+				id: userId,
+				couponCode: couponCode,
+				state: state,
+				source: source,
+				answers: [],
+			}
+
+			window.localStorage.setItem(localStorageName, JSON.stringify(userObj));
+		}
+	},
+	saveLocalAnswers:function(answers) {
+		var localObj = this.getLocal();
+		if (localObj.status == true) {
+			localObj.userObj.answers = answers;
+			window.localStorage.setItem(localStorageName, JSON.stringify(localObj.userObj));
+		}
+		else {
+			console.error('error getting local user info');
+		}
+	},
+	getLocal: function() {
+		if (window.localStorage.getItem(localStorageName)) {
+			try {
+				var userObj = JSON.parse(window.localStorage.getItem(localStorageName));
+				if (userObj.id) {
+					return {
+						userObj: userObj,
+						status: true
+					}
+				}
+				else {
+					return {
+						status: false
+					}
+				}
+			}
+			catch(err) {
+				console.error(err);
+				return {
+					status: false
+				}
+			}
+		}
+		else {
+			return {
+				status: false
+			}
+		}
 	},
 	loadLocal: function() {
-		if (window.localStorage.getItem('localUser')) {
-			user.info.id = window.localStorage.getItem('localUser');
-			user.info.couponLink = window.localStorage.getItem('localCoupon');
-			user.info.state = window.localStorage.getItem('localState');
+		if (window.localStorage.getItem(localStorageName)) {
+			try {
+				var userObj = JSON.parse(window.localStorage.getItem(localStorageName));
+				if (userObj.id) {
+					user.info.id = userObj.id;
+					user.info.couponCode = userObj.couponCode;
+					user.info.state = userObj.state;
+					user.info.answers = userObj.answers;
+					user.info.source = userObj.state;
+				}
+			}
+			catch(err) {
+				console.error(err);
+			}
 		}
 	},
 	clearLocal: function() {
-		window.localStorage.removeItem('localUser');
-		window.localStorage.removeItem('localCoupon');
-		window.localStorage.removeItem('localState');	
-		window.localStorage.removeItem('localAnswers');	
+		window.localStorage.removeItem(localStorageName);	
 	}
 };
 

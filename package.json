@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "fingerprintjs2": "^1.8.1",
     "firebase": "^5.0.3",
     "firebase-admin": "^5.12.1",
     "firebase-functions": "^1.0.3"

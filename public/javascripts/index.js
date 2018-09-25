@@ -3,7 +3,7 @@ import {singleAnswerQuestion, multipleAnswerQuestion, dropdownQuestion} from './
 import miniSelect from './miniSelect';
 import modal from './modal';
 import winningLogic from './winningLogic2';
-import user from './user4';
+import user from './user';
 import '../stylesheets/miniSelect.css';
 import '../stylesheets/style.css';
 import '../stylesheets/miniCheckbox.css';
@@ -608,18 +608,26 @@ var app = {
 		  		status: false
 		  	}
 		}
-		
+
 		if (this.localObj.status == true) {
-			user.get(this.localObj.userObj.id, this.params.source).then((response) => {
-				console.log(response);
-		    if (response.data.status == false && response.data.message != 'error') { // user is not registered
-			    user.clearLocal(); // db has been cleared, clear local storage also
-			    this.localObj = {
-			  		status: false
-			  	}
-		    }
+			if (this.params.source) {
+				user.get(this.localObj.userObj.id, this.params.source).then((response) => {
+					console.log(response);
+				    if (response.data.status == false && response.data.message != 'error') { // user is not registered
+					    user.clearLocal(); // db has been cleared, clear local storage also
+					    this.localObj = {
+					  		status: false
+					  	}
+				    }
+					this.start();
+				}).catch((error) => {
+					console.error(error);
+					this.start();
+				});
+			}
+			else {
 				this.start();
-			});
+			}
 		}
 		else {
 			this.start(1000);
@@ -651,7 +659,7 @@ var app = {
 			            			clearInterval(playtimer);
 			            		}
 			            		else {
-			            			if (this.player.getCurrentTime() / this.player.getDuration() > 0.8) { //80% played
+			            			if (this.player.getCurrentTime() / this.player.getDuration() > 0.93) { //80% played
 									 	  if (!winningLogic.processed) {
 									  		winningLogic.processed = true;
 									  		this.processResult();
@@ -669,10 +677,14 @@ var app = {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  app.init();
-  modal.init();
-  window.q = app.q;
-  window.params = app.params;
+	setTimeout(() => {
+		user.generateFingerPrint();
+		app.init();
+		modal.init();
+		window.q = app.q;
+		window.params = app.params;
+	}, 500);
+
 });
 
 export {

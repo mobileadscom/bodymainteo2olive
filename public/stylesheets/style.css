@@ -175,6 +175,7 @@ div {
   /*background-image: url('../images/header-new-3.png');*/
   background-size: auto 100%;
   background-repeat: repeat-x;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 .banner img {
@@ -324,7 +325,7 @@ div {
 }
 
 .page .pagination-wrapper button, #toTerms, #startSurvey, #couponLink button {
-  border-radius: 3px;
+  border-radius: 2px;
   font-size: 1.25em;
   border: 1px solid transparent;
   background-color: #C4F86E;
@@ -518,7 +519,7 @@ button:hover .right:after {
   color: white;
   padding: 6px 15px;
   font-size: 18px;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 #toVideo:hover {
