@@ -12,6 +12,9 @@
     </div>
   </header>
   <div>
+    <div id="loadingPage">
+      <div class="loader"></div>
+    </div>
     <div id="couponPage" style="display: none;">
       <div style="padding: 0px 15px;">
         <div id="couponNumber">
@@ -117,6 +120,7 @@ function showCouponCode(couponCode, source) {
     document.getElementById('CircleKIndicator').style.display = 'block';
     document.getElementById('couponInfo').style.marginTop = '20px;'
   }
+  document.getElementById('loadingPage').style.display = 'none';
   document.getElementById('couponPage').style.display = 'block';
 }
 
@@ -137,15 +141,18 @@ function renderFromAPI(userId, source) {
         }
         else {
           if (response.user.state == "lose") {
+            document.getElementById('loadingPage').style.display = 'none';
             document.getElementById('loserPage').style.display = 'block';
           }
           else {
+            document.getElementById('loadingPage').style.display = 'none';
             document.getElementById('surveyPage').style.display = 'block';
           }
         }
       }
       catch (error) {
         console.error(error);
+        document.getElementById('loadingPage').style.display = 'none';
         document.getElementById('surveyPage').style.display = 'block';
       }
     }
@@ -160,6 +167,7 @@ function renderFromAPI(userId, source) {
           }
         }
       } catch(err) {
+        document.getElementById('loadingPage').style.display = 'none';
         document.getElementById('surveyPage').style.display = 'block';
       }
     }
@@ -223,6 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   else {
     console.log('no params found');
+    document.getElementById('loadingPage').style.display = 'none';
     document.getElementById('surveyPage').style.display = 'block';
   }
 });
@@ -268,6 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /*  background-image: url('../images/header-bg-new.png');*/
   background-size: auto 100%;
   background-repeat: repeat-x;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 .banner img {
@@ -329,4 +339,33 @@ body {
 #resultDescription, #resultInstruction {
     margin-top: 10px;
     padding: 0px 15px;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid #555555;
+  margin: auto;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+}
+
 </style>
