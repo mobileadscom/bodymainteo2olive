@@ -3,7 +3,7 @@ import {singleAnswerQuestion, multipleAnswerQuestion, dropdownQuestion} from './
 import miniSelect from './miniSelect';
 import modal from './modal';
 import winningLogic from './winningLogic2';
-import user from './user';
+import user from './user5';
 import '../stylesheets/miniSelect.css';
 import '../stylesheets/style.css';
 import '../stylesheets/miniCheckbox.css';
@@ -16,7 +16,6 @@ var app = {
 	params: {}, // params in query string
 	q: [], // array of questions
 	player: null, //youtube player
-	localObj: user.getLocal(), // localStorage object
 	getParams: function() {
 		  var query_string = {};
 		  var query = window.location.search.substring(1);
@@ -95,8 +94,13 @@ var app = {
 					console.log(response)
 					if (response.data.couponCode) {
 						var couponLink = this.generateCouponLink(user.info.id, this.params.source);
-						user.saveLocal(user.info.id, response.data.couponCode, 'win', this.params.source); //rmb allow this back
-						this.localObj = user.getLocal();
+						// user.saveLocal(user.info.id, response.data.couponCode, 'win', this.params.source);
+						user.saveLocal({
+							id: user.info.id,
+							couponCode: response.data.couponCode,
+							state: 'win',
+							source: this.params.source
+						}, this.params.source);
 						this.initResult('win', couponLink);
 						var message = 'ボディメンテドリンククーポンが当たりました!  ' + encodeURI(couponLink);
 						if (user.info.id.indexOf('@') > -1) { // login via email
@@ -109,15 +113,21 @@ var app = {
 						// user.passResult(user.info.id, flag, user.info.source, couponInfo.couponLink);
 					}
 					else {
-						user.saveLocal(user.info.id, '', 'lose', this.params.source); //rmb allow this back
-						this.localObj = user.getLocal();
+						// user.saveLocal(user.info.id, '', 'lose', this.params.source);
+						user.saveLocal({
+							id: user.info.id,
+							couponCode: '',
+							state: 'lose',
+							source: this.params.source
+						}, this.params.source);
+						
 						this.initResult('lose');
 					}
 				}).catch((error) => {
 					console.log(error);
 					winningLogic.processed = true;
-					user.saveLocal(user.info.id, '', 'lose', this.params.source); //rmb allow this back
-					this.localObj = user.getLocal();
+					// user.saveLocal(user.info.id, '', 'lose', this.params.source); //rmb allow this back
+					// this.localObj = user.getLocal();
 		  			this.initResult('lose');
 				});
 
@@ -138,7 +148,8 @@ var app = {
 		});
 	},
 	continue: function() {
-		var userAnswers = this.localObj.status == true ? this.localObj.userObj.answers : [];
+		var localObj = user.getLocal(this.params.source);
+		var userAnswers = localObj.status == true ? localObj.data.answers : [];
 		var noQuestionAnswered = userAnswers.length - 1;
 
 		/*apply answer to answered question */
@@ -319,17 +330,30 @@ var app = {
 						user.info.source = this.params.source;
 						if (res.data.message == 'user exist.') {
 							console.log('exist!');
-							user.info.id = res.data.user.id;
-							user.info.couponCode = res.data.user.couponCode;
-							user.info.state = res.data.user.state;
-							user.saveLocal(res.data.user.id, res.data.user.couponCode, res.data.user.state, res.data.user.source);
+							// user.info.id = res.data.user.id;
+							// user.info.couponCode = res.data.user.couponCode;
+							// user.info.state = res.data.user.state;
+							// user.saveLocal(res.data.user.id, res.data.user.couponCode, res.data.user.state, res.data.user.source);
+							user.saveLocal({
+								id: res.data.user.id,
+								couponCode: res.data.user.couponCode,
+								state: res.data.user.state,
+								source: res.data.user.source
+							}, res.data.user.source);
+							user.loadLocal(res.data.user.source);
 						}
 						else {
 							console.log('not exist');
-							user.info.id = userId;
-							user.saveLocal(userId, '', '-', this.params.source); // for single user per browser	
+							// user.info.id = userId;
+							// user.saveLocal(userId, '', '-', this.params.source); // for single user per browser
+							user.saveLocal({
+								id: userId,
+								couponCode: '',
+								state: '-',
+								source: this.params.source
+							}, this.params.source);
+							user.loadLocal(this.params.source);
 						}
-						this.localObj = user.getLocal();
 						if (isTwitter) {
 							this.checkTwitter();
 						}
@@ -366,8 +390,13 @@ var app = {
 				// 	user.loadLocal();
 				// }
 				// else {
-					user.saveLocal(userId, response.data.user.couponCode, response.data.user.state, response.data.user.source);
-					this.localObj = user.getLocal();
+					// user.saveLocal(userId, response.data.user.couponCode, response.data.user.state, response.data.user.source);
+					user.saveLocal({
+						id: userId,
+						couponCode: response.data.user.couponCode,
+						state: response.data.user.state,
+						source: response.data.user.source
+					}, response.data.user.source);
 				// }
 				if (isTwitter) {
 					this.checkTwitter();
@@ -403,7 +432,7 @@ var app = {
 							qArray[n] = this.q[n].selectedAnswer;
 						}
 			  	}
-			  	user.saveLocalAnswers(qArray);
+			  	user.saveLocalAnswers(qArray, this.params.source);
 	  		}
 	  		var qNo = parseInt(e.target.dataset.question);
 	  		// user.trackAnswer(user.info.id, qNo, this.q[qNo].selectedAnswer);
@@ -549,9 +578,10 @@ var app = {
 	  /* ==== Questions End ==== */
 	},
 	start: function(delay) {
-		if (this.localObj.status == true && this.localObj.userObj.source == this.params.source) { // this browser already have user
+		var localObj = user.getLocal(this.params.source);
+		if (localObj.status == true && localObj.data.source == this.params.source) { // this browser already have user
 			user.isWanderer = false;
-			user.loadLocal();
+			user.loadLocal(this.params.source);
 			this.enableSaveAnswer();
 			this.continue();
 		}
@@ -561,8 +591,8 @@ var app = {
 					this.initUser(this.params.userId, false);
 				}
 				else {
-					if (this.localObj.status == true) {
-						this.initUser(this.localObj.userObj.id, false);
+					if (localObj.status == true) {
+						this.initUser(localObj.data.id, false);
 					}
 					else {
 						if (this.params.source == 'FamilyMart') {
@@ -613,25 +643,25 @@ var app = {
 
 		/* User Info */
 		if (this.params.userId) {
-		  	user.clearLocal();
-		  	this.localObj = {
-		  		status: false
-		  	}
+		  	user.clearLocal(this.params.source);
 		}
 
-		if (this.localObj.status == true) {
+		var localObj = user.getLocal(this.params.source);
+		if (localObj.status == true) {
 			if (this.params.source) {
-				user.get(this.localObj.userObj.id, this.params.source).then((response) => {
+				user.get(localObj.data.id, this.params.source).then((response) => {
 					console.log(response);
 				    if (response.data.status == false && response.data.message != 'error') { // user is not registered
-					    user.clearLocal(); // db has been cleared, clear local storage also
-					    this.localObj = {
-					  		status: false
-					  	}
+					    user.clearLocal(this.params.source); // db has been cleared, clear local storage also
 				    }
 				    else {
-				    	user.saveLocal(response.data.user.id, response.data.user.couponCode, response.data.user.state, response.data.user.source);
-						this.localObj = user.getLocal();
+				    	// user.saveLocal(response.data.user.id, response.data.user.couponCode, response.data.user.state, response.data.user.source);
+						user.saveLocal({
+							id: response.data.user.id,
+							couponCode: response.data.user.couponCode,
+							state: response.data.user.state,
+							source: response.data.user.source,
+						}, response.data.user.source);
 				    }
 					this.start();
 				}).catch((error) => {
@@ -658,7 +688,7 @@ var app = {
 	    window.onYouTubeIframeAPIReady = () => {
 	        this.player = new YT.Player('vid', {
 		        height: vidHeight.toString(),
-		        width: vidWidth.toString(),
+		        width: vidWidth.toString(),	
 		        playerVars: {'rel': 0,'showinfo': 0, 'controls': 0, 'playsinline': 1},
 		        videoId: 'mWzzKVZ15LE',
 		        events: {
