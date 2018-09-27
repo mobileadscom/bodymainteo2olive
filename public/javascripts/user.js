@@ -142,7 +142,7 @@ var user = {
 	mark: function(userId, state, groups, source) {
 		// var groupJSON = JSON.stringify(groups);
 		var groupJSON = groups[0];
-		return axios.post(apiDomain + '/coupons/o2o/mark_user?id=' + userId + '&state=' + state + '&groups=' + groupJSON + '&source=' + source);
+		return axios.post(apiDomain + '/coupons/o2o/mark_user?id=' + userId + '&state=' + state + '&group=' + groupJSON + '&source=' + source);
 	},
 	win: function(userId, couponInfo) {
 		return new Promise(function(resolve, reject) {
@@ -353,7 +353,7 @@ var user = {
 					user.info.couponCode = userObj.couponCode;
 					user.info.state = userObj.state;
 					user.info.answers = userObj.answers;
-					user.info.source = userObj.state;
+					user.info.source = userObj.source;
 				}
 			}
 			catch(err) {

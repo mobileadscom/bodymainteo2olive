@@ -316,9 +316,19 @@ var app = {
 		    		user.register(userId, this.params.source).then((res) => { // auto register user
 						console.log(res);
 						user.isWanderer = false;
-						user.info.id = userId;
 						user.info.source = this.params.source;
-						user.saveLocal(userId, '', '-', this.params.source); // for single user per browser
+						if (res.data.message == 'user exist.') {
+							console.log('exist!');
+							user.info.id = res.data.user.id;
+							user.info.couponCode = res.data.user.couponCode;
+							user.info.state = res.data.user.state;
+							user.saveLocal(res.data.user.id, res.data.user.couponCode, res.data.user.state, res.data.user.source);
+						}
+						else {
+							console.log('not exist');
+							user.info.id = userId;
+							user.saveLocal(userId, '', '-', this.params.source); // for single user per browser	
+						}
 						this.localObj = user.getLocal();
 						if (isTwitter) {
 							this.checkTwitter();
@@ -618,6 +628,10 @@ var app = {
 					    this.localObj = {
 					  		status: false
 					  	}
+				    }
+				    else {
+				    	user.saveLocal(response.data.user.id, response.data.user.couponCode, response.data.user.state, response.data.user.source);
+						this.localObj = user.getLocal();
 				    }
 					this.start();
 				}).catch((error) => {
