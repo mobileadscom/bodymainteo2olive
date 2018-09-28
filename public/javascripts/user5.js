@@ -11,7 +11,7 @@ var apiDomain = 'https://api.mobileads.com';
 
 var userCollection = 'BodyMainteUsers';
 var couponCollection = 'BodyMainteCoupons';
-var functionsDomain = 'https://us-central1-familymarto2o.cloudfunctions.net/twitter';
+var functionsDomain = 'https://us-central1-bodymainteo2o.cloudfunctions.net/twitter';
 
 var localStorageName = 'BodyMainte';
 
@@ -215,6 +215,7 @@ var user = {
   //   return axios.post(domain + '/api/coupon/softbank/mark_user', markForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 	},
 	trackWin: function(userId) {
+		// put in couponCode in value
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'win';
 			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId);

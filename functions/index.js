@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 
 var config = twitterConfig.mobileads;
-var twitterPageId = '2166166477'; // client's twitter page. In order for this app to send direct message, the twitter user(audience) has to follow this first.
+var twitterPageId = '853113165210460160'; // client's twitter page. In order for this app to send direct message, the twitter user(audience) has to follow this first.
 
 app.get('/', (req, res) => {
   res.send('Hello World');
@@ -26,7 +26,8 @@ app.post('/sendMessage', function(req, res) {
         "target": {
           "recipient_id": req.body.recipientId
         },
-        "sender_id": "2166166477", 
+        // "sender_id": "2166166477", 
+        "sender_id": twitterPageId,
         "message_data": {
           "text": req.body.text
         }
