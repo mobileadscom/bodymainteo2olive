@@ -158,12 +158,23 @@ function renderFromAPI(userId, source) {
     }
     else if (this.readyState == 4 && this.status != 200) {
       try {
-        var localObj = getLocal();
+        var localObj = getLocal(params.source);
         if (localObj.status == true) {
-          if (localObj.userObj.id == params.userId && localObj.userObj.source == params.source) {
+          if (localObj.data.id == params.userId && localObj.data.source == params.source) {
             console.log('render from local');
-            showCouponCode(localObj.userObj.couponCode, localObj.userObj.source);
-            // trackCouponView(couponCode, params.userId);
+            if (localObj.data.state == 'win') {
+              document.getElementById('loadingPage').style.display = 'none';
+              showCouponCode(localObj.data.couponCode, localObj.data.source);
+               // trackCouponView(couponCode, params.userId);
+            }
+            else if (localObj.data.state == 'lose') {
+              document.getElementById('loadingPage').style.display = 'none';
+              document.getElementById('loserPage').style.display = 'block';
+            }
+            else {
+              document.getElementById('loadingPage').style.display = 'none';
+              document.getElementById('surveyPage').style.display = 'block';
+            }
           }
         }
       } catch(err) {
@@ -177,18 +188,17 @@ function renderFromAPI(userId, source) {
   xmlhttp.send();
 }
 
-function getLocal() {
+function getLocal(source) {
   if (window.localStorage.getItem('BodyMainte')) {
     try {
-      var userObj = JSON.parse(window.localStorage.getItem('BodyMainte'));
-      if (userObj.id) {
+      var dataObj = JSON.parse(window.localStorage.getItem('BodyMainte'));
+      if (dataObj[source] && dataObj[source].id) {
         return {
-          userObj: userObj,
+          data: dataObj[source],
           status: true
         }
       }
       else {
-        console.error('no id found in localStorage');
         return {
           status: false
         }
@@ -199,6 +209,11 @@ function getLocal() {
       return {
         status: false
       }
+    }
+  }
+  else {
+    return {
+      status: false
     }
   }
 }
