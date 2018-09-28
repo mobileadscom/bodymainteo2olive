@@ -524,7 +524,7 @@ var app = {
 
 	  this.q[3] = new multipleAnswerQuestion({
 	  	wrapper: document.getElementById('q3'),
-	  	question: '<span class="red">QUESTION 3</span><br>秋冬の風邪・インフルエンザ対策について<br>意識的に行っていることを教えてください。<br><span style="font-size:14px;color:#222;">複数選択可能</span>',
+	  	question: '<span class="red">QUESTION 3</span><br>秋冬の健康対策として、体調維持のために意識的に行っていることを教えてください。<br><span style="font-size:14px;color:#222;">複数選択可能</span>',
 	  	answers: [{
 	    	value: 'うがいをする',
 	    	text: 'うがいをする',
@@ -538,8 +538,8 @@ var app = {
 	    	value: '加湿器を使う',
 	    	text: '加湿器を使う'
 	    }, {
-	    	value: 'インフルエンザ予防接種を受ける',
-	    	text: 'インフルエンザ予防接種を受ける'
+	    	value: 'バランスのよい食事を心がけている',
+	    	text: 'バランスのよい食事を心がけている'
 	    }, {
 	    	value: '乳酸菌飲料を飲む',
 	    	text: '乳酸菌飲料を飲む'
@@ -565,7 +565,7 @@ var app = {
 
 	  this.q[5] = new singleAnswerQuestion({
 	  	wrapper: document.getElementById('q5'),
-	  	question: '<span class="red">QUESTION 5</span><br>10月9日に新発売のボディメンテドリンクは「水分・電解質+ カラダを守る乳酸菌B240」で設計された、これまでにない「飲んでカラダをバリアする。」全く新しい飲料です。ご存知でしたか？',
+	  	question: '<span class="red">QUESTION 5</span><br>10月9日に新発売のボディメンテ ドリンクは「電解質+乳酸菌Ｂ240」の働きで「飲んでカラダをバリアする。」全く新しい飲料です。ご存じでしたか？',
 	  	answers: [{
 	    	value: 'Yes',
 	    	text: 'Yes',
