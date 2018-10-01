@@ -21,7 +21,7 @@
           123456
         </div>
         <div id="CircleKIndicator" style="display: none;margin-top: 10px;">サークルK・サンクス</div>
-        <div id="couponInfo">
+        <div id="couponInfo-FM">
           <span style="color: #19AE48;font-weight: 600;">クーポン発券期限：</span>
           <br>2018年10月21日まで
           <br><br><span style="color: #19AE48;font-weight: 600;">商品引換期限：</span>
@@ -60,6 +60,43 @@
             </ul>
           </div>
           <br>発券されるクーポン券面の注意事項もお読みくださいますようお願い申し上げます。
+        </div>
+        <div id="couponInfo-CK">
+          <span style="color: #19AE48;font-weight: 600;">クーポン対象商品：</span>
+          <br>ボディメンテ ドリンク
+          <br><br><span style="color: #19AE48;font-weight: 600;">商品引換え期間：</span>
+          <br>2018年10月22日まで
+          <br><br><span style="color: #19AE48;font-weight: 600;">交換場所：</span>
+          <br>全国のサークルK・サンクス店舗
+          <br><br><span style="color: #19AE48;font-weight: 600;">商品の引換方法：</span>
+          <br>【STEP1】
+            <br>クーポン発行ＩＤ（9桁の英数字）を確認してください。当メールにクーポン発行ＩＤが記載されていますので、引き換えまで保存をお願いします。
+            <br><br>【STEP2】
+            <br>クーポン発行ＩＤが確認できるものをお持ちください。お近くのＫステーションが設置されたサークルＫ・サンクスで発券手続きをしてください。
+            <div class="j-list-wrapper">
+              <div class="j-list">
+                <div class="j-point">(1)</div><div class="j-text">Ｋステーションのトップメニューから「クーポン」ボタンをタッチしてください。</div>
+              </div>
+              <div class="j-list">
+                <div class="j-point">(2)</div><div class="j-text">発行方法選択画面で「クーポン発行ＩＤで発行する」ボタンをタッチしてください。</div>
+              </div>
+              <div class="j-list">
+                <div class="j-point">(3)</div><div class="j-text">確認したクーポン発行ＩＤ（9桁の英数字）を入力してください。</div>
+              </div>
+              <div class="j-list">
+                <div class="j-point">(4)</div><div class="j-text">該当の商品ボタンをタッチしてください。</div>
+              </div>
+              <div class="j-list">
+                <div class="j-point">(5)</div><div class="j-text">Ｋステーションからクーポン券が発行されます。</div>
+              </div>
+              <div class="j-list">
+                <div class="j-point">※</div><div class="j-text">操作方法など、ご不明な点はＫステーション備え付けのオートホンをお取りください。</div>
+              </div>
+            </div>
+            <br>【STEP3】
+            <br>クーポン券と商品を持ち、レジで引き換えてください。Ｋステーションにて発券したクーポン券を、商品と一緒にレジでスタッフにお渡しください
+            <br><br>＜引換方法は以下のＵＲＬからもご確認いただけます＞
+            <br><a href="http://www.circleksunkus.jp/service/kst/coupon.html" target="_blank" style="word-break: break-word;">http://www.circleksunkus.jp/service/kst/coupon.html</a>
         </div>
       </div>
       <div style="margin-bottom: 20px;">
@@ -116,9 +153,13 @@ function trackCouponView(couponCode, userId) {
 function showCouponCode(couponCode, source) {
   document.getElementById('couponNumber').innerHTML = couponCode;
   if (source == 'CircleK') {
-    document.getElementById('excLoc').innerHTML = '全国のサークルK・サンクス店舗';
+    // document.getElementById('excLoc').innerHTML = '全国のサークルK・サンクス店舗';
     document.getElementById('CircleKIndicator').style.display = 'block';
-    document.getElementById('couponInfo').style.marginTop = '20px;'
+    document.getElementById('couponInfo-CK').style.display = 'block';
+    document.getElementById('couponInfo-CK').style.marginTop = '20px;'
+  }
+  else {
+    document.getElementById('couponInfo-FM').style.display = 'block';
   }
   document.getElementById('loadingPage').style.display = 'none';
   document.getElementById('couponPage').style.display = 'block';
@@ -319,7 +360,7 @@ body {
   max-width: 360px;
 }
 
-#couponInfo {
+#couponInfo-FM, #couponInfo-CK {
   margin: 30px auto 20px;
   font-size: 14px;
   padding: 10px;
@@ -327,6 +368,7 @@ body {
   border-radius: 4px;
   max-width: 600px;
   text-align: left;
+  display: none;
   /*font-weight: 600;*/
 }
 
@@ -383,4 +425,23 @@ body {
   box-sizing: border-box;
 }
 
+ .j-list-wrapper {
+  text-align: left;
+}
+
+ .j-list {
+  margin: 5px 0px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+ .j-list .j-point {
+   display: inline-block;
+   margin: 0px 5px;
+}
+
+ .j-list .j-text {
+  display: inline-block;
+}
 </style>
