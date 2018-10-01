@@ -11,7 +11,7 @@ var apiDomain = 'https://api.mobileads.com';
 
 var userCollection = 'BodyMainteUsers';
 var couponCollection = 'BodyMainteCoupons';
-var functionsDomain = 'https://us-central1-bodymainteo2o.cloudfunctions.net/twitter';
+var functionsDomain = 'https://us-central1-bodymainteo2o-1366e.cloudfunctions.net/twitter';
 
 var localStorageName = 'BodyMainte';
 
