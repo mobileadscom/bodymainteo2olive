@@ -163,6 +163,12 @@ var app = {
 			console.log(user.info);
 			this.initResult('win', this.generateCouponLink(user.info.id, this.params.source));
 			this.pages.toPage('resultPage');
+			if (this.params.source == 'CircleK') {
+				document.getElementById('exchangeMethods-CK').style.display = 'block';
+			}
+			else {
+				document.getElementById('exchangeMethods-FM').style.display = 'block';
+			}
 		}
 		else if (user.info.state == 'lose') {
 			this.initResult('lose');
@@ -695,6 +701,12 @@ var app = {
 		            'onStateChange': (event) => {
 			            if (event.data == YT.PlayerState.ENDED) {
 							this.pages.toPage('resultPage');
+							if (this.params.source == 'CircleK') {
+								document.getElementById('exchangeMethods-CK').style.display = 'block';
+							}
+							else {
+								document.getElementById('exchangeMethods-FM').style.display = 'block';
+							}
 			            }
 			            else if (event.data == YT.PlayerState.PLAYING) {
 			            	var playtimer = setInterval(() => {
