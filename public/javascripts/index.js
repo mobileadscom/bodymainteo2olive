@@ -76,6 +76,7 @@ var app = {
 			document.getElementById('resultImage').style.display = 'none';
 			document.getElementById('couponLink').style.display = 'none';
 			document.getElementById('couponInfo').style.display = 'none';
+			document.getElementById('twitterLink').style.display = 'none';
 		}
 	},
 	processResult() {
