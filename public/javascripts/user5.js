@@ -18,7 +18,7 @@ var localStorageName = 'BodyMainte';
 var campaignId = 'ca8ca8c34a363fa07b2d38d007ca55c6';
 var adUserId = '4441';
 var rmaId = '1';
-var generalUrl = 'https://track.richmediaads.com/a/analytic.htm?rmaId={{rmaId}}&domainId=0&pageLoadId={{cb}}&userId={{adUserId}}&pubUserId=0&campaignId={{campaignId}}&callback=trackSuccess&type={{type}}&value={{value}}&uniqueId={{userId}}';
+var generalUrl = 'https://track.richmediaads.com/a/analytic.htm?rmaId={{rmaId}}&domainId=0&pageLoadId={{cb}}&userId={{adUserId}}&pubUserId=0&campaignId={{campaignId}}&callback=trackSuccess&type={{type}}&value={{value}}&uniqueId={{userId}}&customId={{source}}';
 
 var trackingUrl = generalUrl.replace('{{rmaId}}', rmaId).replace('{{campaignId}}', campaignId).replace('{{adUserId}}', adUserId).replace('{{cb}}', Date.now().toString());
 
@@ -59,11 +59,11 @@ var user = {
 
 		return axios.post(apiDomain + '/coupons/o2o/user_register?id=' + userId + '&source=' + source + '&fingerprint=' + this.fingerprint);
 	},
-	trackRegister: function(userId) {
+	trackRegister: function(userId, source) {
     // track as impression
     if (window.location.hostname.indexOf('localhost') < 0) {
 	    var type = 'page_view';
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId);
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId).replace('{{source}}', source);
 			return axios.get(url);
     }
 	},
@@ -131,11 +131,11 @@ var user = {
 			console.error(error);
     });
 	},
-	trackAnswer: function(userId, questionNo, answer) {
+	trackAnswer: function(userId, questionNo, answer, source) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'q_a';
 			var value = 'q' + questionNo.toString() + '_' + encodeURIComponent(answer);
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', value).replace('{{userId}}', userId);
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', value).replace('{{userId}}', userId).replace('{{source}}', source);
 			return axios.get(url);
 	  }
 	},
@@ -214,11 +214,11 @@ var user = {
   //   markForm.append('source', source);
   //   return axios.post(domain + '/api/coupon/softbank/mark_user', markForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 	},
-	trackWin: function(userId) {
+	trackWin: function(userId, couponCode) {
 		// put in couponCode in value
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'win';
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId);
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', couponCode).replace('{{userId}}', userId).replace('{{source}}', source);
 			url += '&tt=E&ty=E';
 			return axios.get(url);
 		}
@@ -226,7 +226,7 @@ var user = {
 	trackLose: function(userId) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'lose';
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId);
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId).replace('{{source}}', source);
 			url += '&tt=E&ty=E';
 			return axios.get(url);
 		}

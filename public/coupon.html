@@ -120,6 +120,12 @@
 </html>
 
 <script type="text/javascript">
+var campaignId = 'ca8ca8c34a363fa07b2d38d007ca55c6';
+var adUserId = '4441';
+var rmaId = '1';
+var generalUrl = 'https://track.richmediaads.com/a/analytic.htm?rmaId={{rmaId}}&domainId=0&pageLoadId={{cb}}&userId={{adUserId}}&pubUserId=0&campaignId={{campaignId}}&callback=trackSuccess&type={{type}}&value={{value}}&uniqueId={{userId}}&customId={{source}}';
+var trackingUrl = generalUrl.replace('{{rmaId}}', rmaId).replace('{{campaignId}}', campaignId).replace('{{adUserId}}', adUserId).replace('{{cb}}', Date.now().toString());
+
 function getParams() {
   var query_string = {};
   var query = window.location.search.substring(1);
@@ -141,13 +147,17 @@ function getParams() {
   return query_string;
 }
 
-function trackCouponView(couponCode, userId) {
- /* if (window.location.hostname.indexOf('localhost') < 0 && window.location.protocol != 'file:') { 
-  var timestamp = Date.now();
+function trackCouponView(userId, couponCode, source) {
+  if (window.location.hostname.indexOf('localhost') < 0 && window.location.protocol != 'file:') {
   var pixel = document.createElement('img');
-  pixel.src = 'https://track.richmediaads.com/a/analytic.htm?uid=0&isNew={{isNew}}&referredUrl={{referredUrl}}&rmaId=2&domainId=0&pageLoadId=' + timestamp + '&userId=4831&pubUserId=0&campaignId=e32e385370b2e04d225d2dfa5497483b&browser={{browser}}&os={{os}}&domain={{domain}}&callback=trackSuccess&type=coupon_view&tt=E&value=' + couponCode + '&ty=E&uniqueId=' + userId;
-    document.body.appendChild(pixel);
-  }*/
+  var type = 'coupon_view'
+  var src = trackingUrl.replace('{{type}}', type).replace('{{value}}', couponCode).replace('{{userId}}', userId).replace('{{source}}', source);
+  console.log(src);
+  // pixel.src = src;
+  // document.body.appendChild(pixel);
+/*  pixel.src = 'https://track.richmediaads.com/a/analytic.htm?uid=0&isNew={{isNew}}&referredUrl={{referredUrl}}&rmaId=2&domainId=0&pageLoadId=' + timestamp + '&userId=4831&pubUserId=0&campaignId=e32e385370b2e04d225d2dfa5497483b&browser={{browser}}&os={{os}}&domain={{domain}}&callback=trackSuccess&type=coupon_view&tt=E&value=' + couponCode + '&ty=E&uniqueId=' + userId;
+    document.body.appendChild(pixel);*/
+  }
 }
 
 function showCouponCode(couponCode, source) {
@@ -178,7 +188,7 @@ function renderFromAPI(userId, source) {
       try {
         if (response.user.couponCode) {
           showCouponCode(response.user.couponCode, response.user.source);
-          // trackCouponView(response.user.couponCode, params.userId);
+          trackCouponView(params.userId, response.user.couponCode, params.source);
         }
         else {
           if (response.user.state == "lose") {
@@ -206,7 +216,7 @@ function renderFromAPI(userId, source) {
             if (localObj.data.state == 'win') {
               document.getElementById('loadingPage').style.display = 'none';
               showCouponCode(localObj.data.couponCode, localObj.data.source);
-               // trackCouponView(couponCode, params.userId);
+              trackCouponView(params.userId, localObj.data.couponCode, localObj.data.source);
             }
             else if (localObj.data.state == 'lose') {
               document.getElementById('loadingPage').style.display = 'none';

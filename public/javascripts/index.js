@@ -112,6 +112,7 @@ var app = {
 							user.messageTwitter(message);
 						}
 						// user.passResult(user.info.id, flag, user.info.source, couponInfo.couponLink);
+						// user.trackWin(user.info.id, response.data.couponCode, this.params.source);
 					}
 					else {
 						// user.saveLocal(user.info.id, '', 'lose', this.params.source);
@@ -123,6 +124,8 @@ var app = {
 						}, this.params.source);
 						
 						this.initResult('lose');
+						// user.trackLose(user.info.id, this.params.source);
+
 					}
 				}).catch((error) => {
 					console.log(error);
@@ -131,17 +134,6 @@ var app = {
 					// this.localObj = user.getLocal();
 		  			this.initResult('lose');
 				});
-
-	  		if (actualResult == 'win') {
-	  			// track win
-	  			// make loser
-	  			// user.trackWin(user.info.id, 'lose');
-	  		}
-	  		else {
-	  			// track lose
-	  			// user.trackLose(user.info.id);
-	  		}
-
 			}
 			else {
 				this.initResult(actualResult);
@@ -368,7 +360,7 @@ var app = {
 							this.continue();
 						}
 						this.enableSaveAnswer();
-					  // user.trackRegister(userId);
+					  // user.trackRegister(userId, this.params.source);
 		    		}).catch((err) => {
 		    			user.isWanderer = true;
 		    			console.log(err);
@@ -442,7 +434,7 @@ var app = {
 			  	user.saveLocalAnswers(qArray, this.params.source);
 	  		}
 	  		var qNo = parseInt(e.target.dataset.question);
-	  		// user.trackAnswer(user.info.id, qNo, this.q[qNo].selectedAnswer);
+	  		// user.trackAnswer(user.info.id, qNo, this.q[qNo].selectedAnswer, this.params.source);
 			  // user.saveAnswer(user.info.id, qArray);
 	  	})
 	 }
