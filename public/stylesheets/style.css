@@ -33,7 +33,7 @@ div {
   }
 
   .terms .paragraph {
-    text-indent: 30px;
+    /*text-indent: 30px;*/
     margin: 10px auto;
   }
 
@@ -101,7 +101,7 @@ div {
   }
 
   .terms .paragraph {
-    text-indent: 50px;
+    /*text-indent: 50px;*/
     margin: 20px auto;
   }
 
@@ -261,6 +261,7 @@ div {
 
 .terms .paragraph {
   max-width: 600px;
+  text-align: left;
 }
 
 .terms .list {
@@ -533,4 +534,32 @@ button:hover .right:after {
 
 #exchangeMethods-FM, #exchangeMethods-CK {
   display: none;
+}
+
+
+.vid-button {
+  border: 0;
+  background: transparent;
+  box-sizing: border-box;
+  width: 0;
+  height: 74px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-color: transparent transparent transparent #FFFFFF;
+  transition: 0.3s all ease;
+  cursor: pointer;
+    border-style: solid;
+  border-width: 37px 0 37px 60px;
+  /*opacity: 0;*/
+}
+
+.vid-button.paused {
+  border-style: double;
+  border-width: 0px 0 0px 60px;
+}
+
+.vid-button:hover {
+    border-color: transparent transparent transparent #DDDDDD;
 }

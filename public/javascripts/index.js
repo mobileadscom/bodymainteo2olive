@@ -54,10 +54,12 @@ var app = {
 				if (this.params.source == 'CircleK') {
 					document.getElementById('resultInstruction').innerHTML = "クーポンを受け取って、サークルK・サンクスで引き換えてください";
 					document.getElementById('excLoc').innerHTML = '全国のサークルK・サンクス店舗';
+					document.getElementById('exchangeMethods-CK').style.display = 'block';
 				}
 				else {
 					document.getElementById('resultInstruction').innerHTML = "クーポンを受け取って、ファミリーマートで引き換えてください";
 					document.getElementById('excLoc').innerHTML = '全国のファミリーマート店舗';
+					document.getElementById('exchangeMethods-FM').style.display = 'block';
 				}
 			}
 
@@ -156,12 +158,6 @@ var app = {
 			console.log(user.info);
 			this.initResult('win', this.generateCouponLink(user.info.id, this.params.source));
 			this.pages.toPage('resultPage');
-			if (this.params.source == 'CircleK') {
-				document.getElementById('exchangeMethods-CK').style.display = 'block';
-			}
-			else {
-				document.getElementById('exchangeMethods-FM').style.display = 'block';
-			}
 		}
 		else if (user.info.state == 'lose') {
 			this.initResult('lose');
@@ -297,7 +293,11 @@ var app = {
 
     document.getElementById('toVideo').addEventListener('click', () => {
 		setTimeout(() => {
+			// youtube
 			this.player.playVideo();
+
+			// html5 video
+			// this.player.play();
 		}, 300);
     });
 	  /* ==== Event Listeners End ==== */
@@ -564,7 +564,7 @@ var app = {
 
 	  this.q[5] = new singleAnswerQuestion({
 	  	wrapper: document.getElementById('q5'),
-	  	question: '<span class="red">QUESTION 5</span><br>10月9日に新発売のボディメンテ ドリンクは「電解質+乳酸菌Ｂ240」の働きで「飲んでカラダをバリアする。」全く新しい飲料です。ご存じでしたか？',
+	  	question: '<span class="red">QUESTION 5</span><br>10月9日に新発売のボディメンテ ドリンクは「電解質+乳酸菌Ｂ240」の働きで「飲んでカラダをバリアする」全く新しい飲料です。ご存じでしたか？',
 	  	answers: [{
 	    	value: 'Yes',
 	    	text: 'Yes',
@@ -689,17 +689,11 @@ var app = {
 		        height: vidHeight.toString(),
 		        width: vidWidth.toString(),	
 		        playerVars: {'rel': 0,'showinfo': 0, 'controls': 0, 'playsinline': 1},
-		        videoId: 'mWzzKVZ15LE',
+		        videoId: 'tJR7gb58Ziw',
 		        events: {
 		            'onStateChange': (event) => {
 			            if (event.data == YT.PlayerState.ENDED) {
 							this.pages.toPage('resultPage');
-							if (this.params.source == 'CircleK') {
-								document.getElementById('exchangeMethods-CK').style.display = 'block';
-							}
-							else {
-								document.getElementById('exchangeMethods-FM').style.display = 'block';
-							}
 			            }
 			            else if (event.data == YT.PlayerState.PLAYING) {
 			            	var playtimer = setInterval(() => {
@@ -708,7 +702,7 @@ var app = {
 			            			clearInterval(playtimer);
 			            		}
 			            		else {
-			            			if (this.player.getCurrentTime() / this.player.getDuration() > 0.93) { //80% played
+			            			if (this.player.getCurrentTime() / this.player.getDuration() > 0.86) { //80% played
 									 	  if (!winningLogic.processed) {
 									  		winningLogic.processed = true;
 									  		this.processResult();
@@ -722,6 +716,49 @@ var app = {
 		        }
 		    });
 	    }
+
+	    //HTML5 Video
+	    /*this.player = document.getElementById('vid');
+	    this.player.addEventListener('click', () => {
+			if (this.player.paused) {
+				this.player.play();
+			}
+			else {
+				this.player.pause()
+				var vidBtn = document.getElementById('vidBtn');;
+				vidBtn.classList.add('paused');
+				vidBtn.style.opacity = '1';
+				setTimeout(() => {
+					vidBtn.style.opacity = '0';
+				}, 310);
+			}
+	    });
+
+		this.player.addEventListener('playing', (e) => {
+			var vidBtn = document.getElementById('vidBtn');
+			vidBtn.classList.remove('paused');
+			vidBtn.style.opacity = '1';
+			setTimeout(() => {
+				vidBtn.style.opacity = '0';
+			}, 310);
+			var playtimer = setInterval(() => {
+	    		if (this.player.paused) {
+	    			clearInterval(playtimer);
+	    		}
+	    		else {
+	    			if (this.player.currentTime / this.player.duration > 0.86) { //80% played
+					 	 if (!winningLogic.processed) {
+					  		winningLogic.processed = true;
+					  		this.processResult();
+					  	}
+	    			}
+	    		}
+	    	}, 500);
+		});
+
+		this.player.addEventListener('ended', () => {
+			this.pages.toPage('resultPage');
+		});*/
 	}
 }
 
