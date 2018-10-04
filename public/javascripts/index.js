@@ -37,8 +37,7 @@ var app = {
 		  return query_string;
 	},
 	generateCouponLink(userId, source) {
-		// return 'https://couponcampaign.ienomistyle.com/ボディメンテドリンク/coupon.html?userId=' + userId; 
-		return 'https://s3.amazonaws.com/rmarepo/o2o/ボディメンテドリンク/coupon.html?userId=' + userId + '&source=' + source;
+		return 'http://couponcampaign.predelistyle.com/%E3%83%9C%E3%83%87%E3%82%A3%E3%83%A1%E3%83%B3%E3%83%86%E3%83%89%E3%83%AA%E3%83%B3%E3%82%AF/coupon.html?userId=' + userId + '&source=' + source;
 	},
 	initResult(state, couponLink) {
 		if (state == 'win') {
@@ -83,6 +82,7 @@ var app = {
 	},
 	processResult() {
 		winningLogic.process(this.q, !user.isWanderer).then((resultProperties) => {
+			winningLogic.processed = true;
 			console.log(resultProperties);
 			var actualResult = resultProperties.actualResult;
 			var group = resultProperties.group;
@@ -105,7 +105,7 @@ var app = {
 							source: this.params.source
 						}, this.params.source);
 						this.initResult('win', couponLink);
-						var message = 'ボディメンテドリンククーポンが当たりました!  ' + encodeURI(couponLink);
+						var message = 'ボディメンテドリンククーポンが当たりました!  ' + couponLink;
 						if (user.info.id.indexOf('@') > -1) { // login via email
 				        	var emailContent = '<head><meta charset="utf-8"></head><div style="text-align:center;font-weight:600;color:#FF4244;font-size:28px;">おめでとうございます</div><br><br><div style="text-align:center;font-weight:600;">クーポンが当たりました！</div><a href="' + couponLink + '" target="_blank" style="text-decoration:none;"><button style="display:block;margin:20px auto;margin-bottom:40px;border-radius:5px;background-color:#E54C3C;border:none;color:white;width:200px;height:50px;font-weight:600;">クーポンを受取る</button></a>';
 				        	 user.sendEmail(user.info.id, 'Ienomistyle クーポンキャンペーン', emailContent);
@@ -114,10 +114,11 @@ var app = {
 							user.messageTwitter(message);
 						}
 						// user.passResult(user.info.id, flag, user.info.source, couponInfo.couponLink);
-						// user.trackWin(user.info.id, response.data.couponCode, this.params.source);
+						user.trackWin(user.info.id, response.data.couponCode, this.params.source);
 					}
 					else {
 						// user.saveLocal(user.info.id, '', 'lose', this.params.source);
+						user.trackLose(user.info.id, this.params.source);
 						user.saveLocal({
 							id: user.info.id,
 							couponCode: '',
@@ -126,8 +127,6 @@ var app = {
 						}, this.params.source);
 						
 						this.initResult('lose');
-						// user.trackLose(user.info.id, this.params.source);
-
 					}
 				}).catch((error) => {
 					console.log(error);
@@ -345,6 +344,7 @@ var app = {
 							console.log('not exist');
 							// user.info.id = userId;
 							// user.saveLocal(userId, '', '-', this.params.source); // for single user per browser
+							user.trackRegister(userId, this.params.source);
 							user.saveLocal({
 								id: userId,
 								couponCode: '',
@@ -360,7 +360,6 @@ var app = {
 							this.continue();
 						}
 						this.enableSaveAnswer();
-					  // user.trackRegister(userId, this.params.source);
 		    		}).catch((err) => {
 		    			user.isWanderer = true;
 		    			console.log(err);
@@ -434,7 +433,7 @@ var app = {
 			  	user.saveLocalAnswers(qArray, this.params.source);
 	  		}
 	  		var qNo = parseInt(e.target.dataset.question);
-	  		// user.trackAnswer(user.info.id, qNo, this.q[qNo].selectedAnswer, this.params.source);
+	  		user.trackAnswer(user.info.id, qNo, this.q[qNo].selectedAnswer, this.params.source);
 			  // user.saveAnswer(user.info.id, qArray);
 	  	})
 	 }

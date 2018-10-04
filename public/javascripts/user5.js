@@ -15,9 +15,9 @@ var functionsDomain = 'https://us-central1-bodymainteo2o-1366e.cloudfunctions.ne
 
 var localStorageName = 'BodyMainte';
 
-var campaignId = 'ca8ca8c34a363fa07b2d38d007ca55c6';
-var adUserId = '4441';
-var rmaId = '1';
+var campaignId = '634501954374a87c6b6f4dde00493ded';
+var adUserId = '4831';
+var rmaId = '3';
 var generalUrl = 'https://track.richmediaads.com/a/analytic.htm?rmaId={{rmaId}}&domainId=0&pageLoadId={{cb}}&userId={{adUserId}}&pubUserId=0&campaignId={{campaignId}}&callback=trackSuccess&type={{type}}&value={{value}}&uniqueId={{userId}}&customId={{source}}';
 
 var trackingUrl = generalUrl.replace('{{rmaId}}', rmaId).replace('{{campaignId}}', campaignId).replace('{{adUserId}}', adUserId).replace('{{cb}}', Date.now().toString());
@@ -61,11 +61,11 @@ var user = {
 	},
 	trackRegister: function(userId, source) {
     // track as impression
-    if (window.location.hostname.indexOf('localhost') < 0) {
-	    var type = 'page_view';
+	    if (window.location.hostname.indexOf('localhost') < 0) {
+		    var type = 'page_view';
 			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId).replace('{{source}}', source);
 			return axios.get(url);
-    }
+	    }
 	},
 	sendEmail: function(email, subjectTitle, content) {
   	var formData = new FormData();
@@ -81,6 +81,7 @@ var user = {
 	},
 	registerTwitter: function() {
 		console.log('registerTwitter');
+		firebase.auth().languageCode = 'ja';
 		var provider = new firebase.auth.TwitterAuthProvider();
 	  return firebase.auth().signInWithPopup(provider);
 	},
@@ -137,7 +138,7 @@ var user = {
 			var value = 'q' + questionNo.toString() + '_' + encodeURIComponent(answer);
 			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', value).replace('{{userId}}', userId).replace('{{source}}', source);
 			return axios.get(url);
-	  }
+		}
 	},
 	mark: function(userId, state, groups, source) {
 		// var groupJSON = JSON.stringify(groups);
@@ -214,7 +215,7 @@ var user = {
   //   markForm.append('source', source);
   //   return axios.post(domain + '/api/coupon/softbank/mark_user', markForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 	},
-	trackWin: function(userId, couponCode) {
+	trackWin: function(userId, couponCode, source) {
 		// put in couponCode in value
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'win';
@@ -223,7 +224,7 @@ var user = {
 			return axios.get(url);
 		}
 	},
-	trackLose: function(userId) {
+	trackLose: function(userId, source) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'lose';
 			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId).replace('{{source}}', source);
