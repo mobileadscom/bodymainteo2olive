@@ -618,6 +618,13 @@ var app = {
 
 		/* init pagination */
 		this.params = this.getParams();
+		
+		if (this.params.source) {
+			if (this.params.source == 'Circleksunkus') {
+				this.params.source = 'CircleK';
+			}
+		}
+
 		// this.params.source = 'source1'; // dummy source
 		this.pages = new miniPages({
 		  	pageWrapperClass: document.getElementById('page-wrapper'),
