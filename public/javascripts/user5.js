@@ -83,7 +83,26 @@ var user = {
 		console.log('registerTwitter');
 		firebase.auth().languageCode = 'ja';
 		var provider = new firebase.auth.TwitterAuthProvider();
-	  return firebase.auth().signInWithPopup(provider);
+	  // return firebase.auth().signInWithPopup(provider);
+	  firebase.auth().signInWithRedirect(provider);
+	},
+	getRedirectResult: function() {
+		return new Promise(function(resolve, reject) {
+			console.log('redirect result');
+			firebase.auth().getRedirectResult().then(function(result) {
+			  resolve(result);
+			}).catch(function(error) {
+			  // Handle Errors here.
+			  var errorCode = error.code;
+			  var errorMessage = error.message;
+			  // The email of the user's account used.
+			  var email = error.email;
+			  // The firebase.auth.AuthCredential type that was used.
+			  var credential = error.credential;
+			  reject(error);
+			  // ...
+			});	
+		});
 	},
 	isFollowingTwitter: function() {
 		return axios.post(functionsDomain + '/checkFriendship', {

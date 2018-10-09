@@ -575,6 +575,23 @@ var app = {
 	  });
 	  /* ==== Questions End ==== */
 	},
+	checkRedirection() {
+		user.getRedirectResult().then((result) => {
+			console.log(result);
+			if (result.credential) {
+			 	user.twitter.token = result.credential.accessToken;
+		        user.twitter.secret = result.credential.secret;
+		        var twitterId = result.additionalUserInfo.profile.id_str;
+		        this.initUser(twitterId, true, true);
+			}
+			else {
+				this.start();
+			}
+		}).catch((error) => {
+			console.error(error);
+			this.start();
+		})
+	},
 	start: function(delay) {
 		var localObj = user.getLocal(this.params.source);
 		if (localObj.status == true && localObj.data.source == this.params.source) { // this browser already have user
@@ -617,15 +634,6 @@ var app = {
 	    var vidHeight = document.getElementById('vid').clientHeight;
 
 		/* init pagination */
-		this.params = this.getParams();
-		
-		if (this.params.source) {
-			if (this.params.source == 'Circleksunkus') {
-				this.params.source = 'CircleK';
-			}
-		}
-
-		// this.params.source = 'source1'; // dummy source
 		this.pages = new miniPages({
 		  	pageWrapperClass: document.getElementById('page-wrapper'),
 		  	pageClass: 'page',
@@ -633,6 +641,16 @@ var app = {
 		  	pageButtonClass: 'pageBtn'
 		});
 
+		this.params = this.getParams();
+		if (this.params.source) {
+			if (this.params.source == 'Circleksunkus') {
+				this.params.source = 'CircleK';
+			}
+		}
+		else {
+			this.pages.toPage('errorPage');
+			return
+		}
 		/* init registration form sections */
 		/*this.formSections = new miniPages({
 		  	pageWrapperClass: document.getElementById('formSecWrapper'),
@@ -644,7 +662,7 @@ var app = {
 	    this.events();
 	    
 	    /* apply mini select to <select> */
-		miniSelect.init('miniSelect');
+		// miniSelect.init('miniSelect');
 
 		/* User Info */
 		if (this.params.userId) {
@@ -668,18 +686,22 @@ var app = {
 							source: response.data.user.source,
 						}, response.data.user.source);
 				    }
-					this.start();
+					// this.start();
+					this.checkRedirection();
 				}).catch((error) => {
 					console.error(error);
-					this.start();
+					// this.start();
+					this.checkRedirection();
 				});
 			}
 			else {
-				this.start();
+				// this.start();
+				this.checkRedirection();
 			}
 		}
 		else {
-			this.start(1000);
+			// this.start(1000);
+			this.checkRedirection();
 		}
 	  
 		var processed = false; // check if result has been processed to avoid double result processsing
@@ -709,9 +731,13 @@ var app = {
 			            		}
 			            		else {
 			            			if (this.player.getCurrentTime() / this.player.getDuration() > 0.86) { //80% played
-									 	  if (!winningLogic.processed) {
+									 	if (!winningLogic.processed) {
 									  		winningLogic.processed = true;
+									  		console.log('process result');
 									  		this.processResult();
+									  	}
+									  	else {
+									  		console.log('already processed');
 									  	}
 			            			}
 			            		}

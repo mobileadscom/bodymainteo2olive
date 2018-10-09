@@ -111,6 +111,46 @@ app.post('/checkFriendship', function(req, res) {
     }
   });
 });
+
+
+app.post('/adminLogIn', function(req, res) {
+  if (req.body.username && req.body.password) {
+    if (req.body.username == 'BodyMainteAdmin' && req.body.password == 'BodyMainte987654!') {
+      res.json({
+        authorized: true,
+        message: 'success',
+        status: true,
+        errors: {}
+      });
+    }
+    else {
+      var err = {};
+      if (req.body.username != 'BodyMainteAdmin') {
+        err.username = 'Incorrect username';
+      }
+      if (req.body.password != 'BodyMainte987654!') {
+        err.password = 'Incorrect password';
+      }
+      res.json({
+        authorized: false,
+        message: 'fail',
+        status: false,
+        errors: err
+      });
+    }
+  }
+  else {
+    res.json({
+      authorized: false,
+      message: 'fail',
+      status: false,
+      errors: {
+        username: 'Username is empty',
+        password: 'Password is empty'
+      }
+    });
+  }
+});
 /* /listenFollow not used anymore */
 /*app.post('/listenFollow', function(req, res) {
   var S = new Twit(config);
