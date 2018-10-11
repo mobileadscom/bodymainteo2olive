@@ -57,7 +57,7 @@ var user = {
 		// regForm.append('id', userId);
 		// return axios.post(apiDomain + '/coupons/user_register', regForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 
-		return axios.post(apiDomain + '/coupons/o2o/user_register?id=' + userId + '&source=' + source + '&fingerprint=' + this.fingerprint);
+		return axios.post(apiDomain + '/coupons/o2o/user_register?id=' + userId + '&source=' + source + '&fingerprint=' + userId);
 	},
 	trackExist: function(userId, source, retrievedFingerprint) {
 		if (window.location.hostname.indexOf('localhost') < 0) {

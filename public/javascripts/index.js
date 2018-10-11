@@ -64,8 +64,8 @@ var app = {
 
 			if (couponLink) {
 				document.getElementById('couponLoader').style.display = 'none';
-				document.getElementById('couponLink').href = couponLink;
-				document.getElementById('couponLink').setAttribute('target', '_blank');
+				document.getElementById('couponLink').setAttribute('href', couponLink);
+				// document.getElementById('couponLink').setAttribute('target', '_blank');
 				document.getElementById('getCoupon').innerText = 'クーポンを受け取る';
 			}
 		}
@@ -97,12 +97,12 @@ var app = {
 					console.log(response)
 					if (response.data.couponCode) {
 						var couponLink = this.generateCouponLink(user.info.id, this.params.source);
-						// user.saveLocal(user.info.id, response.data.couponCode, 'win', this.params.source);
 						user.saveLocal({
 							id: user.info.id,
 							couponCode: response.data.couponCode,
 							state: 'win',
-							source: this.params.source
+							source: this.params.source,
+							timestamp: Date.now()
 						}, this.params.source);
 						this.initResult('win', couponLink);
 						var message = 'ボディメンテドリンククーポンが当たりました!  ' + couponLink;
@@ -117,13 +117,13 @@ var app = {
 						user.trackWin(user.info.id, response.data.couponCode, this.params.source);
 					}
 					else {
-						// user.saveLocal(user.info.id, '', 'lose', this.params.source);
 						user.trackLose(user.info.id, this.params.source);
 						user.saveLocal({
 							id: user.info.id,
 							couponCode: '',
 							state: 'lose',
-							source: this.params.source
+							source: this.params.source,
+							timestamp: Date.now()
 						}, this.params.source);
 						
 						this.initResult('lose');
@@ -131,13 +131,11 @@ var app = {
 				}).catch((error) => {
 					console.log(error);
 					winningLogic.processed = true;
-					// user.saveLocal(user.info.id, '', 'lose', this.params.source); //rmb allow this back
-					// this.localObj = user.getLocal();
 		  			this.initResult('lose');
 				});
 			}
 			else {
-				this.initResult(actualResult);
+				this.initResult('lose');
 			}	
 		});
 	},
@@ -250,7 +248,8 @@ var app = {
       var regButtons = document.getElementById('regButtons');
       regLoader.style.display = 'block';
       regButtons.style.display = 'none';
-			user.registerTwitter().then((result) => {
+			user.registerTwitter()
+			/*.then((result) => {
         // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
         // You can use these server side with your app's credentials to access the Twitter API.
         user.twitter.token = result.credential.accessToken;
@@ -269,7 +268,7 @@ var app = {
         var credential = error.credential;
         alert(errorMessage);
         // ..
-      });
+      });*/
     };
 
     var followBtn = document.getElementById('followBtn');
@@ -331,25 +330,25 @@ var app = {
 							// user.info.id = res.data.user.id;
 							// user.info.couponCode = res.data.user.couponCode;
 							// user.info.state = res.data.user.state;
-							// user.saveLocal(res.data.user.id, res.data.user.couponCode, res.data.user.state, res.data.user.source);
 							user.saveLocal({
 								id: res.data.user.id,
 								couponCode: res.data.user.couponCode,
 								state: res.data.user.state,
-								source: res.data.user.source
+								source: res.data.user.source,
+								timestamp: Date.now()
 							}, res.data.user.source);
 							user.loadLocal(res.data.user.source);
 						}
 						else {
 							console.log('not exist');
 							// user.info.id = userId;
-							// user.saveLocal(userId, '', '-', this.params.source); // for single user per browser
 							user.trackRegister(userId, this.params.source);
 							user.saveLocal({
 								id: userId,
 								couponCode: '',
 								state: '-',
-								source: this.params.source
+								source: this.params.source,
+								timestamp: Date.now()
 							}, this.params.source);
 							user.loadLocal(this.params.source);
 						}
@@ -389,12 +388,12 @@ var app = {
 				// 	user.loadLocal();
 				// }
 				// else {
-					// user.saveLocal(userId, response.data.user.couponCode, response.data.user.state, response.data.user.source);
 					user.saveLocal({
 						id: userId,
 						couponCode: response.data.user.couponCode,
 						state: response.data.user.state,
-						source: response.data.user.source
+						source: response.data.user.source,
+						timestamp: Date.now()
 					}, response.data.user.source);
 				// }
 				if (isTwitter) {
@@ -666,37 +665,45 @@ var app = {
 		// miniSelect.init('miniSelect');
 
 		/* User Info */
-		if (this.params.userId) {
+		if (this.params.userId || this.params.reset) {
 		  	user.clearLocal(this.params.source);
 		}
 
 		var localObj = user.getLocal(this.params.source);
 		if (localObj.status == true) {
-			if (this.params.source) {
-				user.get(localObj.data.id, this.params.source).then((response) => {
-					console.log(response);
-				    if (response.data.status == false && response.data.message != 'error') { // user is not registered
-					    user.clearLocal(this.params.source); // db has been cleared, clear local storage also
-				    }
-				    else {
-				    	// user.saveLocal(response.data.user.id, response.data.user.couponCode, response.data.user.state, response.data.user.source);
-						user.saveLocal({
-							id: response.data.user.id,
-							couponCode: response.data.user.couponCode,
-							state: response.data.user.state,
-							source: response.data.user.source,
-						}, response.data.user.source);
-				    }
+			if (localObj.data.timestamp) {
+				if (this.params.source) {
+					user.get(localObj.data.id, this.params.source).then((response) => {
+						console.log(response);
+					    if (response.data.status == false && response.data.message != 'error') { // user is not registered
+						    user.clearLocal(this.params.source); // db has been cleared, clear local storage also
+					    }
+					    else {
+							user.saveLocal({
+								id: response.data.user.id,
+								couponCode: response.data.user.couponCode,
+								state: response.data.user.state,
+								source: response.data.user.source,
+								timestamp: Date.now()
+							}, response.data.user.source);
+					    }
+						// this.start();
+						this.checkRedirection();
+					}).catch((error) => {
+						console.error(error);
+						// this.start();
+						this.checkRedirection();
+					});
+				}
+				else {
 					// this.start();
 					this.checkRedirection();
-				}).catch((error) => {
-					console.error(error);
-					// this.start();
-					this.checkRedirection();
-				});
+				}
 			}
 			else {
-				// this.start();
+				console.log('clear local!')
+				// this.start(1000);
+				user.clearLocalClean();
 				this.checkRedirection();
 			}
 		}
