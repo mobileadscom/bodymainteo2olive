@@ -59,6 +59,13 @@ var user = {
 
 		return axios.post(apiDomain + '/coupons/o2o/user_register?id=' + userId + '&source=' + source + '&fingerprint=' + this.fingerprint);
 	},
+	trackExist: function(userId, source, retrievedFingerprint) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var type = 'exist';
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', retrievedFingerprint + '_' + this.fingerprint).replace('{{userId}}', userId).replace('{{source}}', source);
+			return axios.get(url);
+		}
+	},
 	trackRegister: function(userId, source) {
     // track as impression
 	    if (window.location.hostname.indexOf('localhost') < 0) {

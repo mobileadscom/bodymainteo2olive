@@ -381,6 +381,7 @@ var app = {
 		    	}
 	    	}
 	    	else { // user is registered
+	    		user.trackExist(userId, this.params.source, response.data.user.fingerprint);
 	    		user.isWanderer = false;
 				user.info = response.data.user;
 				user.info.source = response.data.user.source;
