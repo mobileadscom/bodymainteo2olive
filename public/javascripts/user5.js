@@ -26,7 +26,8 @@ var user = {
 	isWanderer: false,
 	twitter: {
 		token: '',
-		secret: ''
+		secret: '',
+		name: ''
 	},
 	info: {
 		answers: [],

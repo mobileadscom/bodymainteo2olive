@@ -105,7 +105,7 @@ var app = {
 							timestamp: Date.now()
 						}, this.params.source);
 						this.initResult('win', couponLink);
-						var message = 'ボディメンテドリンククーポンが当たりました!  ' + couponLink;
+						var message = user.twitter.name + '\n ボディメンテドリンククーポンが当たりました!  ' + couponLink;
 						if (user.info.id.indexOf('@') > -1) { // login via email
 				        	var emailContent = '<head><meta charset="utf-8"></head><div style="text-align:center;font-weight:600;color:#FF4244;font-size:28px;">おめでとうございます</div><br><br><div style="text-align:center;font-weight:600;">クーポンが当たりました！</div><a href="' + couponLink + '" target="_blank" style="text-decoration:none;"><button style="display:block;margin:20px auto;margin-bottom:40px;border-radius:5px;background-color:#E54C3C;border:none;color:white;width:200px;height:50px;font-weight:600;">クーポンを受取る</button></a>';
 				        	 user.sendEmail(user.info.id, 'Ienomistyle クーポンキャンペーン', emailContent);
@@ -254,6 +254,7 @@ var app = {
         // You can use these server side with your app's credentials to access the Twitter API.
         user.twitter.token = result.credential.accessToken;
         user.twitter.secret = result.credential.secret;
+        user.twitter.name = result.user.displayName;
         var twitterId = result.additionalUserInfo.profile.id_str;
         this.initUser(twitterId, true, true);
       }).catch((error) => {
@@ -581,6 +582,7 @@ var app = {
 			if (result.credential) {
 			 	user.twitter.token = result.credential.accessToken;
 		        user.twitter.secret = result.credential.secret;
+		        user.twitter.name = result.user.displayName;
 		        var twitterId = result.additionalUserInfo.profile.id_str;
 		        this.initUser(twitterId, true, true);
 			}
