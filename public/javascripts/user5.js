@@ -54,7 +54,7 @@ var user = {
     });
 	},
 	register: function(userId, source) {
-		// var regForm = new FormData();
+		// var regForm = new FormData(); 
 		// regForm.append('id', userId);
 		// return axios.post(apiDomain + '/coupons/user_register', regForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
 
@@ -63,7 +63,7 @@ var user = {
 	trackExist: function(userId, source, retrievedFingerprint) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'exist';
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', retrievedFingerprint + '_' + this.fingerprint).replace('{{userId}}', userId).replace('{{source}}', source);
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', retrievedFingerprint + '_' + userId).replace('{{userId}}', userId).replace('{{source}}', source);
 			return axios.get(url);
 		}
 	},
@@ -131,7 +131,20 @@ var user = {
       tokenSecret: this.twitter.secret,
       recipientId: this.info.id,
       text: message
-     });
+     })/*.then((response) => {
+		 if (!response.data.event) {
+		 	this.trackMessageError(this.info.id, this.twitter.name, this.info.source);
+		 	if (response.data.message) {
+		 		this.sendEmail('yk@mobileads.com', 'Twitter Message Error', response.data.message + ' ' + this.twitter.name);
+		 		this.sendEmail('april.cheong@mobileads.com', 'Twitter Message Error', response.data.message + ' ' + this.twitter.name);
+		 	}
+		 }
+     }).catch((err) => {
+     	console.error(err);
+     	this.trackMessageError(this.info.id, this.twitter.name, this.info.source);
+     	this.sendEmail('yk@mobileads.com', 'Twitter Message Error',  'Twitter Message Error ' + this.twitter.name);
+     	this.sendEmail('april.cheong@mobileads.com', 'Twitter Message Error', response.data.message + ' ' + this.twitter.name);
+     });*/
 	},
 	saveAnswer: function(userId, answer) {
 		/* this is using the old mysql database. Not using Now */
@@ -163,6 +176,14 @@ var user = {
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'q_a';
 			var value = 'q' + questionNo.toString() + '_' + encodeURIComponent(answer);
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', value).replace('{{userId}}', userId).replace('{{source}}', source);
+			return axios.get(url);
+		}
+	},
+	trackMessageError: function(userId, twitterName, source) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var type = 'messageError';
+			var value = twitterName;
 			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', value).replace('{{userId}}', userId).replace('{{source}}', source);
 			return axios.get(url);
 		}

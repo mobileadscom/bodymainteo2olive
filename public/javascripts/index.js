@@ -105,13 +105,37 @@ var app = {
 							timestamp: Date.now()
 						}, this.params.source);
 						this.initResult('win', couponLink);
-						var message = user.twitter.name + '\n ボディメンテドリンククーポンが当たりました!  ' + couponLink;
+						var message = 'ボディメンテドリンククーポンが当たりました!  ' + couponLink;
+						
 						if (user.info.id.indexOf('@') > -1) { // login via email
 				        	var emailContent = '<head><meta charset="utf-8"></head><div style="text-align:center;font-weight:600;color:#FF4244;font-size:28px;">おめでとうございます</div><br><br><div style="text-align:center;font-weight:600;">クーポンが当たりました！</div><a href="' + couponLink + '" target="_blank" style="text-decoration:none;"><button style="display:block;margin:20px auto;margin-bottom:40px;border-radius:5px;background-color:#E54C3C;border:none;color:white;width:200px;height:50px;font-weight:600;">クーポンを受取る</button></a>';
 				        	 user.sendEmail(user.info.id, 'Ienomistyle クーポンキャンペーン', emailContent);
 						}
 						else {
-							user.messageTwitter(message);
+							// user.messageTwitter(message);
+						/*	if (this.params.source == 'FamilyMart') {
+								var message = `
+								ユーザー名: ${user.twitter.name},
+								\nクーポン発行ID: SZLA2DJT8J
+								\nクーポン対象商品：ボディメンテ ドリンク
+								\nクーポン発券期限：2018年10月21日まで
+								\n商品引換期限：2018年10月22日まで
+								\n交換場所：全国のファミリーマート店舗 
+								\nFamiポート操作手順：※店頭に商品がない場合がございます。ご来店される店舗に商品があることをご確認の上、クーポン券を発券してください。
+								\n以下の手順でファミリーマート店頭のFamiポートで、クーポン券を発券してください。
+								\n1.  Famiポート トップメニュー（トップ画面）で「クーポン券」をタッチ
+								\n2.  「シリアル番号をお持ちの方はこちら」ボタンをタッチ
+								\n3.  クーポン発券用シリアル番号を入力
+								\n4.  サービス内容を確認
+								\n5.  クーポン券を発券
+								\n6.  発券したクーポン券とともに対象商品をレジカウンターまでお持ちください。
+								\nキャンペーン事務局
+								\n株式会社コンテンツブレイン
+								\nサポート対応時間：10:00 – 18:00
+								\n03-5919-2234
+								\ncampaign@predelistyle.com`
+								user.messageTwitter(message);
+							}*/
 						}
 						// user.passResult(user.info.id, flag, user.info.source, couponInfo.couponLink);
 						user.trackWin(user.info.id, response.data.couponCode, this.params.source);
@@ -385,6 +409,17 @@ var app = {
 	    		user.isWanderer = false;
 				user.info = response.data.user;
 				user.info.source = response.data.user.source;
+
+				//testing
+				// var message = `ボディメンテ ドリンククーポンが
+				// \n当たりました！
+				// \nユーザー名: ${user.twitter.name}
+				// \nクーポン発行ID: SZLA2DJT8J
+				// \nクーポン対象商品：ボディメンテ ドリンク
+				// \n交換場所：全国のファミリーマート店舗 `
+				// user.messageTwitter('ボディメンテドリンククーポンが当たりました!  https://couponcampaign.predelistyle.com/%E3%83%9C%E3%83%87%E3%82%A3%E3%83%A1%E3%83%B3%E3%83%86%E3%83%89%E3%83%AA%E3%83%B3%E3%82%AF/coupon.html?userId=892241160915238912&source=FamilyMart');
+				//testing ends
+
 				// if (this.localObj.status == true) { // this browser already have user
 				// 	user.loadLocal();
 				// }
@@ -806,7 +841,7 @@ var app = {
 
 document.addEventListener('DOMContentLoaded', function() {
 	setTimeout(() => {
-		user.generateFingerPrint();
+		// user.generateFingerPrint();
 		app.init();
 		modal.init();
 		window.q = app.q;
