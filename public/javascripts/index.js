@@ -272,7 +272,7 @@ var app = {
 	    var regButtons = document.getElementById('regButtons');
 	    regLoader.style.display = 'block';
 	    regButtons.style.display = 'none';
-	    user.trackTwitterClick(this.params.source);
+	    user.trackTwitterLoginClick(this.params.source);
 	    setTimeout(() => {
 			user.registerTwitter()
 		}, 1000);
@@ -303,6 +303,7 @@ var app = {
     var followBtn = document.getElementById('followBtn');
     followBtn.onclick = () => {
     	followBtn.style.display = 'none';
+    	user.trackTwitterFollowClick(this.params.source);
     	user.followTwitter().then((response) => {
 				console.log(response);
 	        if (response.data == 'followed!') {
@@ -327,16 +328,29 @@ var app = {
 			// this.player.play();
 		}, 300);
     });
+
+    document.getElementById('toTerms2').addEventListener('click', () => {
+    	setTimeout(() => {
+			user.trackTermsPage(this.params.source);
+    	}, 300);
+    });
+
+    document.getElementById('startSurvey').addEventListener('click', () => {
+    	setTimeout(() => {
+			user.trackTwitterLoginPage(this.params.source);
+    	}, 300);
+    })
 	  /* ==== Event Listeners End ==== */
 	},
 	checkTwitter: function() { // Check if user is following official page
 		user.isFollowingTwitter().then((resp) => {
       console.log(resp);
       if (resp.data == 'following') {
-				this.continue();
+		this.continue();
       }
       else {
-		     this.pages.toPage('followPage');
+	    this.pages.toPage('followPage');
+		user.trackTwitterFollowPage(this.params.source);
       }
     }).catch((error) => {
       console.log(error);
@@ -639,7 +653,7 @@ var app = {
 		if (localObj.status == true && localObj.data.source == this.params.source) { // this browser already have user
 			user.isWanderer = false;
 			user.loadLocal(this.params.source);
-			user.trackSecondImp(user.info.id, this.params.source);
+			user.trackSecondImp(this.params.source);
 			this.enableSaveAnswer();
 			this.continue();
 		}

@@ -62,22 +62,99 @@ var user = {
 	},
 	trackFirstImp: function(source) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
+			var localObj = this.getLocal(source);
 			var type = 'imp';
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', '').replace('{{source}}', source);
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{source}}', source);
+			if (localObj.status == true) {
+				url = url.replace('{{userId}}', localObj.data.id);
+			}
+			else {
+				url = url.replace('{{userId}}', '');
+			}
 			return axios.get(url);
 		}
 	},
-	trackSecondImp: function(userId, source) {
+	trackSecondImp: function(source) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
+			var localObj = this.getLocal(source);
 			var type = 'imp_2';
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId).replace('{{source}}', source);
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{source}}', source);
+			if (localObj.status == true) {
+				url = url.replace('{{userId}}', localObj.data.id);
+			}
+			else {
+				url = url.replace('{{userId}}', '');
+			}
 			return axios.get(url);
 		}
 	},
-	trackTwitterClick: function(source) {
+	trackTermsPage: function(source) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
+			var localObj = this.getLocal(source);
+			var type = 'imp_tnc';
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{source}}', source);
+			if (localObj.status == true) {
+				url = url.replace('{{userId}}', localObj.data.id);
+			}
+			else {
+				url = url.replace('{{userId}}', '');
+			}
+			return axios.get(url);
+		}
+	},
+	trackTwitterLoginPage: function(source) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var localObj = this.getLocal(source);
+			var type = 'imp_tw';
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{source}}', source);
+			if (localObj.status == true) {
+				url = url.replace('{{userId}}', localObj.data.id);
+			}
+			else {
+				url = url.replace('{{userId}}', '');
+			}
+			return axios.get(url);
+		}
+	},
+	trackTwitterFollowPage: function(source) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var localObj = this.getLocal(source);
+			var type = 'imp_twf';
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{source}}', source);
+			if (localObj.status == true) {
+				url = url.replace('{{userId}}', localObj.data.id);
+			}
+			else {
+				url = url.replace('{{userId}}', '');
+			}
+			return axios.get(url);
+		}
+	},
+	trackTwitterLoginClick: function(source) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var localObj = this.getLocal(source);
 			var type = 'twitter_click';
-			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', '').replace('{{source}}', source);
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{source}}', source);
+			if (localObj.status == true) {
+				url = url.replace('{{userId}}', localObj.data.id);
+			}
+			else {
+				url = url.replace('{{userId}}', '');
+			}
+			return axios.get(url);
+		}
+	},
+	trackTwitterFollowClick: function(source) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var localObj = this.getLocal(source);
+			var type = 'follow_click';
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{source}}', source);
+			if (localObj.status == true) {
+				url = url.replace('{{userId}}', localObj.data.id);
+			}
+			else {
+				url = url.replace('{{userId}}', '');
+			}
 			return axios.get(url);
 		}
 	},
