@@ -60,6 +60,27 @@ var user = {
 
 		return axios.post(apiDomain + '/coupons/o2o/user_register?id=' + userId + '&source=' + source + '&fingerprint=' + userId);
 	},
+	trackFirstImp: function(source) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var type = 'imp';
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', '').replace('{{source}}', source);
+			return axios.get(url);
+		}
+	},
+	trackSecondImp: function(userId, source) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var type = 'imp_2';
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', userId).replace('{{source}}', source);
+			return axios.get(url);
+		}
+	},
+	trackTwitterClick: function(source) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var type = 'twitter_click';
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}', '').replace('{{source}}', source);
+			return axios.get(url);
+		}
+	},
 	trackExist: function(userId, source, retrievedFingerprint) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var type = 'exist';

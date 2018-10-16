@@ -268,11 +268,15 @@ var app = {
     /* twitter registration / login */
     var twitReg = document.getElementById('regTwitter');
     twitReg.onclick = () => {
-      var regLoader = document.getElementById('regWorking');
-      var regButtons = document.getElementById('regButtons');
-      regLoader.style.display = 'block';
-      regButtons.style.display = 'none';
+	    var regLoader = document.getElementById('regWorking');
+	    var regButtons = document.getElementById('regButtons');
+	    regLoader.style.display = 'block';
+	    regButtons.style.display = 'none';
+	    user.trackTwitterClick(this.params.source);
+	    setTimeout(() => {
 			user.registerTwitter()
+		}, 1000);
+		
 			/*.then((result) => {
         // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
         // You can use these server side with your app's credentials to access the Twitter API.
@@ -622,6 +626,7 @@ var app = {
 		        this.initUser(twitterId, true, true);
 			}
 			else {
+				user.trackFirstImp(this.params.source)
 				this.start();
 			}
 		}).catch((error) => {
@@ -634,6 +639,7 @@ var app = {
 		if (localObj.status == true && localObj.data.source == this.params.source) { // this browser already have user
 			user.isWanderer = false;
 			user.loadLocal(this.params.source);
+			user.trackSecondImp(user.info.id, this.params.source);
 			this.enableSaveAnswer();
 			this.continue();
 		}
