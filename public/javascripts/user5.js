@@ -116,6 +116,21 @@ var user = {
 			return axios.get(url);
 		}
 	},
+	trackTwitterAlreadyFollow: function(source) {
+		if (window.location.hostname.indexOf('localhost') < 0) {
+			var localObj = this.getLocal(source);
+			var type = 'twitter_followed';
+			var url = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{source}}', source);
+			if (localObj.status == true) {
+				url = url.replace('{{userId}}', localObj.data.id);
+			}
+			else {
+				url = url.replace('{{userId}}', '');
+			}
+			// console.log(url);
+			return axios.get(url);
+		}
+	},
 	trackTwitterFollowPage: function(source) {
 		if (window.location.hostname.indexOf('localhost') < 0) {
 			var localObj = this.getLocal(source);

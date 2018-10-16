@@ -334,7 +334,11 @@ var app = {
 			user.trackTermsPage(this.params.source);
     	}, 300);
     });
-
+	document.getElementById('toTerms3').addEventListener('click', () => {
+    	setTimeout(() => {
+			user.trackTermsPage(this.params.source);
+    	}, 300);
+    });
     document.getElementById('startSurvey').addEventListener('click', () => {
     	setTimeout(() => {
 			user.trackTwitterLoginPage(this.params.source);
@@ -346,6 +350,7 @@ var app = {
 		user.isFollowingTwitter().then((resp) => {
       console.log(resp);
       if (resp.data == 'following') {
+      	user.trackTwitterAlreadyFollow(this.params.source);
 		this.continue();
       }
       else {
