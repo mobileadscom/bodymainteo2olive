@@ -2,6 +2,7 @@
 <html lang="jp">
 <head>
   <title>ボティメンテ ドリンク</title>
+  <!-- <script src="html2pdf.bundle.min.js"></script> -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
 </head>
@@ -21,7 +22,12 @@
           123456
         </div>
         <div id="CircleKIndicator" style="display: none;margin-top: 10px;">サークルK・サンクス</div>
-        <div style="margin-top: 10px;">上記クーポン発行IDは、大切に保管ください。</div>
+        <div style="margin: 10px auto 0px;max-width: 600px;">
+          <div style="text-align: left;font-size: 14px;text-align: left;color: red;font-weight: 600;">
+            上記クーポン発行ID(当選コード）は、キャプチャーまたはメモするなどして、大切に保管ください。
+            <br>クーポン発行IDを再度確認されたい方は、キャンペーンバナーを再度クリックください。
+          </div>
+        </div>
         <div id="couponInfo-FM">
           <span style="color: #19AE48;font-weight: 600;">クーポン対象商品：</span>
           <br>ボディメンテ ドリンク
@@ -186,6 +192,12 @@ function showCouponCode(couponCode, source) {
   }
   document.getElementById('loadingPage').style.display = 'none';
   document.getElementById('couponPage').style.display = 'block';
+
+ /* var element = document.getElementById('couponPage');
+  var opt = {
+    filename:     'coupon.pdf',
+  };
+  html2pdf().from(element).set(opt).save();*/
 }
 
 function renderFromAPI(userId, source) {
@@ -286,27 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var params = getParams();
   window.params = params;
   if (params.userId && params.source) {
-    // try {
-    //   var localObj = getLocal();
-    //   if (localObj.status == true) {
-    //     if (localObj.userObj.id == params.userId && localObj.userObj.source == params.source) {
-    //       console.log('1');
-    //       showCouponCode(localObj.userObj.couponCode, localObj.userObj.source);
-    //       // trackCouponView(couponCode, params.userId);
-    //     }
-    //     else {
-    //       console.log('2');
-    //       renderFromAPI(params.userId, params.source);
-    //     }
-    //   }
-    //   else {
-    //     console.log('3');
-    //     renderFromAPI(params.userId, params.source);
-    //   }
-    // } catch(err) {
-    //   console.log('4');
-      renderFromAPI(params.userId, params.source);
-    // }
+    renderFromAPI(params.userId, params.source);
   }
   else {
     console.log('no params found');
