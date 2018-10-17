@@ -327,6 +327,25 @@ var app = {
 			// html5 video
 			// this.player.play();
 		}, 300);
+		
+		// no video
+		/*setTimeout(() => {
+ 			this.pages.toPage('resultPage');
+ 			document.getElementById('vidEndLoader').style.display = 'none';
+ 			document.getElementById('toVideo').style.display = 'inline-block';
+		}, 2000);
+		document.getElementById('vidEndLoader').style.display = 'block';
+		document.getElementById('toVideo').style.display = 'none';
+		
+		
+		if (!winningLogic.processed) {
+	  		winningLogic.processed = true;
+	  		console.log('process result');
+	  		this.processResult();
+	  	}
+	  	else {
+	  		console.log('already processed');
+	  	}*/
     });
 
     document.getElementById('toTerms2').addEventListener('click', () => {
@@ -711,6 +730,7 @@ var app = {
 		}
 		else {
 			this.pages.toPage('errorPage');
+			user.trackFirstImp('error');
 			return
 		}
 		/* init registration form sections */
