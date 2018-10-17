@@ -664,7 +664,7 @@ var app = {
 		        this.initUser(twitterId, true, true);
 			}
 			else {
-				user.trackFirstImp(this.params.source)
+				// user.trackFirstImp(this.params.source)
 				this.start();
 			}
 		}).catch((error) => {
@@ -730,7 +730,7 @@ var app = {
 		}
 		else {
 			this.pages.toPage('errorPage');
-			user.trackFirstImp('error');
+			// user.trackFirstImp('error');
 			return
 		}
 		/* init registration form sections */

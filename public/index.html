@@ -1,6 +1,52 @@
 <!DOCTYPE html>
 <html lang="jp">
 <head>
+<script type="text/javascript">
+	function queryParams() {
+		  var query_string = {};
+		  var query = window.location.search.substring(1);
+		  var vars = query.split("&");
+		  for (var i=0;i<vars.length;i++) {
+		      var pair = vars[i].split("=");
+		      // If first entry with this name
+		      if (typeof query_string[pair[0]] === "undefined") {
+		          query_string[pair[0]] = pair[1];
+		      // If second entry with this name
+		      } else if (typeof query_string[pair[0]] === "string") {
+		          var arr = [ query_string[pair[0]], pair[1] ];
+		          query_string[pair[0]] = arr;
+		      // If third or later entry with this name
+		      } else {
+		          query_string[pair[0]].push(pair[1]);
+		      }
+		  } 
+		  return query_string;
+	}
+
+	if (window.location.hostname.indexOf('localhost')) {
+		var qparams = queryParams();
+		var campaignId = '634501954374a87c6b6f4dde00493ded';
+		var adUserId = '4831';
+		var rmaId = '3';
+		var generalUrl = 'https://track.richmediaads.com/a/analytic.htm?rmaId={{rmaId}}&domainId=0&pageLoadId={{cb}}&userId={{adUserId}}&pubUserId=0&campaignId={{campaignId}}&callback=trackSuccess&type={{type}}&value={{value}}&uniqueId={{userId}}&customId={{source}}';
+		var trackingUrl = generalUrl.replace('{{rmaId}}', rmaId).replace('{{campaignId}}', campaignId).replace('{{adUserId}}', adUserId).replace('{{cb}}', Date.now().toString());
+	    var pixel = document.createElement('img');
+	    var type = 'imp'
+	    var src = trackingUrl.replace('{{type}}', type).replace('{{value}}', '').replace('{{userId}}','')
+	    if (qparams.source == 'FamilyMart') {
+	    	src = src.replace('{{source}}', 'FamilyMart');
+	    }
+	    else if (qparams.source == 'Circleksunkus') {
+	    	src = src.replace('{{source}}', 'CircleK');
+	    }
+	    else {
+	    	src = src.replace('{{source}}', 'error');
+	    }
+	    pixel.src = src;
+	    document.head.appendChild(pixel);
+	}
+</script>
+
 	<!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -13,6 +59,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta charset="utf-8">
 </head>
 <body>
+	<noscript>
+		<img src="https://track.richmediaads.com/a/analytic.htm?rmaId=3&domainId=0&pageLoadId=12345&userId=4831&pubUserId=0&campaignId=634501954374a87c6b6f4dde00493ded&callback=trackSuccess&type=imp_nojs&value=&uniqueId=&customId="  border="0" width="0x" height="0" style="display:none;visibility:hidden"/>
+	</noscript>
 	<!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5FWB9JK"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
