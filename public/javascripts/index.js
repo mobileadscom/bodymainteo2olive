@@ -109,7 +109,7 @@ var app = {
 						
 						if (user.info.id.indexOf('@') > -1) { // login via email
 				        	var emailContent = '<head><meta charset="utf-8"></head><div style="text-align:center;font-weight:600;color:#FF4244;font-size:28px;">おめでとうございます</div><br><br><div style="text-align:center;font-weight:600;">クーポンが当たりました！</div><a href="' + couponLink + '" target="_blank" style="text-decoration:none;"><button style="display:block;margin:20px auto;margin-bottom:40px;border-radius:5px;background-color:#E54C3C;border:none;color:white;width:200px;height:50px;font-weight:600;">クーポンを受取る</button></a>';
-				        	 user.sendEmail(user.info.id, 'Ienomistyle クーポンキャンペーン', emailContent);
+				        	 user.sendEmail(user.info.id, 'Predelistyle ボティメンテ ドリンク', emailContent);
 						}
 						else {
 							// user.messageTwitter(message);

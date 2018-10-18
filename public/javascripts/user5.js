@@ -190,7 +190,7 @@ var user = {
 	},
 	sendEmail: function(email, subjectTitle, content) {
   	var formData = new FormData();
-    formData.append('sender', 'Couponcampaign.ienomistyle.com');
+    formData.append('sender', 'couponcampaign@predelistyle.com');
     formData.append('subject', subjectTitle);
     formData.append('recipient', email);
     formData.append('content', content);
